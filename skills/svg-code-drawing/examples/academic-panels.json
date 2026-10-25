@@ -1,0 +1,5 @@
+[
+  {"label": "a", "type": "battery", "width_ratio": 0.38, "height": 52, "arrow_to_next": true},
+  {"label": "b", "type": "placeholder", "desc": "EIS Nyquist", "width_ratio": 0.29, "height": 52, "arrow_to_next": true},
+  {"label": "c", "type": "placeholder", "desc": "Cycling Stability", "width_ratio": 0.33, "height": 52}
+]

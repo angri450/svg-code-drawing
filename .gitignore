@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+# AI 干活的过程文件（现写脚本、探测输出、日志、备份），不进版本库
+tmp/

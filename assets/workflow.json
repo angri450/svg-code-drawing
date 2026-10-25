@@ -1,0 +1,23 @@
+{
+  "title": "SVG 代码制图工作流",
+  "subtitle": "从一句话需求到可交付的图",
+  "style": 1,
+  "height": 580,
+  "nodes": [
+    {"id": "n1", "x": 47, "y": 150, "width": 190, "height": 84, "label": "语义先行", "sublabel": "一句话写清机制"},
+    {"id": "n2", "x": 272, "y": 150, "width": 190, "height": 84, "label": "分类", "sublabel": "实物图还是逻辑图"},
+    {"id": "n3", "x": 497, "y": 150, "width": 190, "height": 84, "label": "选风格", "sublabel": "七套配色选一"},
+    {"id": "n4", "x": 722, "y": 150, "width": 190, "height": 84, "label": "生成", "sublabel": "模板起步写坐标"},
+    {"id": "n5", "x": 160, "y": 390, "width": 190, "height": 84, "label": "校验", "sublabel": "十类检查"},
+    {"id": "n6", "x": 385, "y": 390, "width": 190, "height": 84, "label": "人机审查", "sublabel": "点选元素改坐标"},
+    {"id": "n7", "x": 610, "y": 390, "width": 190, "height": 84, "label": "交付", "sublabel": "出 PNG 或 HTML"}
+  ],
+  "arrows": [
+    {"source": "n1", "target": "n2", "flow": "control"},
+    {"source": "n2", "target": "n3", "flow": "control"},
+    {"source": "n3", "target": "n4", "flow": "control"},
+    {"source": "n4", "target": "n5", "flow": "control", "source_port": "bottom", "target_port": "top", "route_points": [[817, 320], [255, 320]]},
+    {"source": "n5", "target": "n6", "flow": "control"},
+    {"source": "n6", "target": "n7", "flow": "control"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "svg-code-drawing",
+  "version": "3.1.1",
+  "description": "用 SVG 代码画图：工程示意图、技术图、论文多面板图，中英混排字体可分开指定。",
+  "author": {
+    "name": "angri450"
+  },
+  "homepage": "https://gitcode.com/angri450/svg-code-drawing",
+  "repository": "https://gitcode.com/angri450/svg-code-drawing",
+  "license": "Apache-2.0",
+  "keywords": ["svg", "diagram", "flowchart", "architecture", "drawing", "cjk-font"]
+}

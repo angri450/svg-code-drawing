@@ -1,0 +1,4 @@
+[
+  {"from": "a", "to": "b", "label": "Assemble"},
+  {"from": "b", "to": "c", "label": "Evaluate"}
+]
