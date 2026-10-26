@@ -58,7 +58,7 @@
 2. **选风格与字体**：工程图用三套配方；手绘风八选一；技术图默认 style-1。字体按需指定，写名字前先查（见下节）。
 3. **生成**：技术图用 `build_diagram.py` 起步（生成、校验、导出一条命令），工程图写 Python 脚本，有现成稿走导入器（Mermaid、draw.io）。
 4. **校验**：十类检查。目标为 PPT、打印、HMI 时加 `--portable`。
-5. **人机审查**：产物打成 HTML 壳，浏览器里点选元素，改坐标再合成，刷新复查。
+5. **人机审查**：同一台机器时产物打成 HTML 壳，浏览器里点选元素，改坐标再合成，刷新复查；浏览器不在同一台机器时改用 `annotate_html.py` 生成单文件标注页，用户框选/点选后导出 JSON。
 6. **交付**：出 PNG（resvg / rsvg-convert / Chromium 自动降级），保留原 SVG 与 HTML。
 
 ## 字体
@@ -97,6 +97,7 @@ skills/svg-code-drawing/        skill 本体
     academic/                   期刊版面规格、图注工作流、组件库
     style-1..7*.md              技术图配色，默认 style-1
     layout-arithmetic.md        布局尺寸算术：居中、基线、盒高、连接线、交付自查
+    annotation-review.md        读图评审：单文件标注页、JSON 坐标回改
     pitfalls.md                 生成方式、导入器、防错、坑速查、可移植模式
     svg-beyond-drawing.md       动画、交互、图表、地图、图标 sprite
     icons.md                    产品图标
@@ -115,6 +116,7 @@ skills/svg-code-drawing/        skill 本体
     drawio_to_svg.py            导入 draw.io
     extract_brand.py            站点品牌色提取
     moss_compose.py             画风质感管线：MOSS/生图出底 + SVG 线稿与文字叠印（水印可选）
+    annotate_html.py            单文件标注页：图片内嵌、框选/点选、导出 JSON
   templates/                    10 种技术图骨架 SVG
   examples/                     论文面板数据样例（panels、arrows）
 assets/                         宣传物料：能力总览横幅、工作流图，附生成脚本与数据

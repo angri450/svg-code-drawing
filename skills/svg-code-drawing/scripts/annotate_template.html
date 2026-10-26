@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bright: #C8102E;
+    --panel: #232323;
+    --panel-2: #2b2b2b;
+    --line: #3a3a3a;
+    --text: #ececec;
+    --muted: #9a9a9a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: #151515;
+    color: var(--text);
+    font-family: "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 14px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: #1f1f1f;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 18px 0 0;
+    letter-spacing: 1px;
+  }
+  button, .import {
+    background: #2c2c2c;
+    color: var(--text);
+    border: 1px solid #464646;
+    border-radius: 6px;
+    padding: 7px 13px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    line-height: 1.2;
+  }
+  button:hover, .import:hover { border-color: #777; }
+  button.active {
+    background: var(--bright);
+    border-color: var(--bright);
+    color: #fff;
+  }
+  #status {
+    margin-left: auto;
+    color: #9fd0e0;
+    font-size: 13px;
+    min-width: 90px;
+    text-align: right;
+  }
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 16px;
+    padding: 16px;
+    align-items: start;
+  }
+  .stage {
+    position: relative;
+    background: #0d0d0d;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    user-select: none;
+    touch-action: none;
+  }
+  .stage img { display: block; width: 100%; height: auto; }
+  #overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+  }
+  .anno { cursor: pointer; }
+  .anno-rect {
+    fill: rgba(200, 16, 46, 0.10);
+    stroke: var(--bright);
+    stroke-width: 4;
+  }
+  .anno-rect.draft {
+    fill: rgba(200, 16, 46, 0.06);
+    stroke-dasharray: 10 6;
+    pointer-events: none;
+  }
+  .anno-dot {
+    fill: rgba(200, 16, 46, 0.12);
+    stroke: var(--bright);
+    stroke-width: 4;
+  }
+  .badge { fill: var(--bright); stroke: #fff; stroke-width: 3; }
+  .badge-text {
+    fill: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+  .anno.selected .anno-rect,
+  .anno.selected .anno-dot {
+    fill: rgba(200, 16, 46, 0.22);
+    stroke-width: 6;
+  }
+  aside {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    max-height: calc(100vh - 86px);
+    overflow: auto;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 0 0 14px;
+  }
+  .hint b { color: #e0e0e0; font-weight: 600; }
+  .empty { color: #777; font-size: 13px; }
+  .item {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .item.active {
+    border-color: var(--bright);
+    box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.22);
+  }
+  .item-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #ddd;
+    margin-bottom: 8px;
+  }
+  .num { color: #ff8494; font-weight: 700; }
+  .coords {
+    margin-left: auto;
+    color: #888;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  textarea {
+    width: 100%;
+    min-height: 56px;
+    background: #1d1d1d;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #eee;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+  textarea:focus { outline: none; border-color: #777; }
+  .del {
+    margin-top: 6px;
+    padding: 3px 8px;
+    font-size: 12px;
+    background: transparent;
+    border-color: #5a3a3a;
+    color: #ff9a9a;
+  }
+  .json-box {
+    margin-top: 18px;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .json-box summary {
+    cursor: pointer;
+    color: #bbb;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  #jsonOut {
+    width: 100%;
+    height: 180px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    background: #161616;
+  }
+  .json-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .import { display: inline-block; }
+  .import input { display: none; }
+  @media (max-width: 980px) {
+    main { grid-template-columns: 1fr; }
+    aside { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>__TITLE__</h1>
+  <button class="tool active" data-tool="rect">框选</button>
+  <button class="tool" data-tool="point">点选</button>
+  <button id="clear">清空</button>
+  <button id="download">导出 JSON</button>
+  <button id="copy">复制 JSON</button>
+  <span id="status"></span>
+</header>
+
+<main>
+  <div class="stage" id="stage">
+    <img id="art" src="__IMAGE_DATA__" alt="信息图">
+    <svg id="overlay" viewBox="0 0 __WIDTH__ __HEIGHT__" preserveAspectRatio="none"></svg>
+  </div>
+
+  <aside>
+    <p class="hint">
+      选 <b>框选</b> 在图上拖一个框，或选 <b>点选</b> 点一下要改的位置；<br>
+      在右侧卡片里写清楚要改什么。标注自动存本地，最后用 <b>导出 JSON</b> 或 <b>复制 JSON</b> 发我。
+    </p>
+    <div id="list"></div>
+
+    <details class="json-box">
+      <summary>JSON（可复制 / 导出 / 导入）</summary>
+      <textarea id="jsonOut" readonly></textarea>
+      <div class="json-actions">
+        <button id="download2">下载 JSON</button>
+        <button id="copy2">复制 JSON</button>
+        <label class="import">导入 JSON<input type="file" id="importFile" accept="application/json,.json"></label>
+      </div>
+    </details>
+  </aside>
+</main>
+
+<script>
+const W = __WIDTH__, H = __HEIGHT__;
+const STORE_KEY = "svg-annotation-review-v1";
+const IMAGE_NAME = __IMAGE_NAME_JSON__;
+const SVGNS = "http://www.w3.org/2000/svg";
+const overlay = document.getElementById("overlay");
+const list = document.getElementById("list");
+const status = document.getElementById("status");
+const jsonOut = document.getElementById("jsonOut");
+
+let tool = "rect";
+let annotations = [];
+let nextId = 1;
+let draft = null;
+let start = null;
+let selectedId = null;
+
+function svgEl(name, attrs = {}) {
+  const el = document.createElementNS(SVGNS, name);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function pt(e) {
+  const r = overlay.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(W, (e.clientX - r.left) / r.width * W)),
+    y: Math.max(0, Math.min(H, (e.clientY - r.top) / r.height * H))
+  };
+}
+
+function setTool(next) {
+  tool = next;
+  document.querySelectorAll(".tool").forEach(b => b.classList.toggle("active", b.dataset.tool === next));
+}
+
+function badge(g, x, y, id) {
+  const bx = Math.max(24, Math.min(W - 24, x));
+  const by = Math.max(24, Math.min(H - 24, y));
+  g.appendChild(svgEl("circle", { class: "badge", cx: bx, cy: by, r: 22 }));
+  const t = svgEl("text", { class: "badge-text", x: bx, y: by + 1 });
+  t.textContent = id;
+  g.appendChild(t);
+}
+
+function addRect(x, y, w, h, comment = "", id = null) {
+  id = id ?? nextId++;
+  const g = svgEl("g", { class: "anno", "data-id": id });
+  g.appendChild(svgEl("rect", { class: "anno-rect", x, y, width: w, height: h }));
+  badge(g, x, y, id);
+  overlay.appendChild(g);
+  annotations.push({ id, shape: "rect", x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(h), comment });
+  nextId = Math.max(nextId, id + 1);
+  renderList();
+  select(id);
+}
+
+function addPoint(x, y, comment = "", id = null) {
+  id = id ?? nextId++;
+  const g = svgEl("g", { class: "anno", "data-id": id });
+  g.appendChild(svgEl("circle", { class: "anno-dot", cx: x, cy: y, r: 18 }));
+  g.appendChild(svgEl("circle", { cx: x, cy: y, r: 3, fill: "#C8102E" }));
+  badge(g, x + 30, y - 30, id);
+  overlay.appendChild(g);
+  annotations.push({ id, shape: "point", x: Math.round(x), y: Math.round(y), w: 0, h: 0, comment });
+  nextId = Math.max(nextId, id + 1);
+  renderList();
+  select(id);
+}
+
+function coordText(a) {
+  return a.shape === "rect" ? `${a.x}, ${a.y} · ${a.w}×${a.h}` : `${a.x}, ${a.y}`;
+}
+
+function renderList() {
+  list.innerHTML = "";
+  if (!annotations.length) {
+    list.innerHTML = '<p class="empty">还没有标注。</p>';
+    return;
+  }
+  for (const a of annotations) {
+    const item = document.createElement("div");
+    item.className = "item";
+    item.dataset.id = a.id;
+
+    const head = document.createElement("div");
+    head.className = "item-head";
+    head.innerHTML = `<span class="num">#${a.id}</span><span>${a.shape === "rect" ? "框选" : "点选"}</span><span class="coords">${coordText(a)}</span>`;
+
+    const ta = document.createElement("textarea");
+    ta.value = a.comment;
+    ta.placeholder = "这里要改什么？";
+    ta.addEventListener("input", () => { a.comment = ta.value; persist(); });
+    ta.addEventListener("focus", () => select(a.id, false));
+
+    const del = document.createElement("button");
+    del.className = "del";
+    del.textContent = "删除";
+    del.addEventListener("click", (e) => { e.stopPropagation(); removeAnno(a.id); });
+
+    item.append(head, ta, del);
+    item.addEventListener("click", (e) => {
+      if (e.target !== ta && e.target !== del) select(a.id, false);
+    });
+    list.appendChild(item);
+  }
+}
+
+function select(id, focus = true) {
+  selectedId = id;
+  document.querySelectorAll(".anno").forEach(g => g.classList.toggle("selected", Number(g.dataset.id) === id));
+  document.querySelectorAll(".item").forEach(item => item.classList.toggle("active", Number(item.dataset.id) === id));
+  if (focus) {
+    const item = list.querySelector(`.item[data-id="${id}"]`);
+    if (item) {
+      const ta = item.querySelector("textarea");
+      if (ta) ta.focus();
+    }
+  }
+}
+
+function removeAnno(id) {
+  const g = overlay.querySelector(`.anno[data-id="${id}"]`);
+  if (g) g.remove();
+  annotations = annotations.filter(a => a.id !== id);
+  if (selectedId === id) selectedId = null;
+  renderList();
+  persist();
+  status.textContent = "";
+}
+
+function payload() {
+  return {
+    image: IMAGE_NAME,
+    canvas: { width: W, height: H },
+    items: annotations
+  };
+}
+
+function persist() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(payload())); } catch (e) {}
+  updateJson();
+}
+
+function updateJson() {
+  jsonOut.value = JSON.stringify(payload(), null, 2);
+}
+
+function downloadJson() {
+  const blob = new Blob([JSON.stringify(payload(), null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "infographic_annotations.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  status.textContent = "JSON 已导出";
+}
+
+async function copyJson() {
+  const text = JSON.stringify(payload(), null, 2);
+  try {
+    await navigator.clipboard.writeText(text);
+    status.textContent = "JSON 已复制";
+  } catch (e) {
+    jsonOut.focus();
+    jsonOut.select();
+    document.execCommand("copy");
+    status.textContent = "JSON 已复制";
+  }
+}
+
+function clearAll(doPersist = true) {
+  overlay.querySelectorAll(".anno").forEach(g => g.remove());
+  annotations = [];
+  nextId = 1;
+  selectedId = null;
+  renderList();
+  if (doPersist) persist();
+  status.textContent = "";
+}
+
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || !Array.isArray(data.items)) throw new Error("items 不是数组");
+      clearAll(false);
+      for (const a of data.items) {
+        if (a.shape === "rect") addRect(a.x, a.y, a.w, a.h, a.comment || "", a.id);
+        else if (a.shape === "point") addPoint(a.x, a.y, a.comment || "", a.id);
+      }
+      renderList();
+      persist();
+      status.textContent = `已导入 ${annotations.length} 条`;
+    } catch (e) {
+      status.textContent = "导入失败：" + e.message;
+    }
+  };
+  reader.readAsText(file);
+}
+
+overlay.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  const hit = e.target.closest(".anno");
+  if (hit) { select(Number(hit.dataset.id)); return; }
+  const p = pt(e);
+  if (tool === "point") { addPoint(p.x, p.y); persist(); return; }
+  start = p;
+  draft = svgEl("rect", { class: "anno-rect draft", x: p.x, y: p.y, width: 0, height: 0 });
+  overlay.appendChild(draft);
+  overlay.setPointerCapture(e.pointerId);
+});
+
+overlay.addEventListener("pointermove", (e) => {
+  if (!draft || !start) return;
+  const p = pt(e);
+  const x = Math.min(start.x, p.x), y = Math.min(start.y, p.y);
+  draft.setAttribute("x", x);
+  draft.setAttribute("y", y);
+  draft.setAttribute("width", Math.abs(p.x - start.x));
+  draft.setAttribute("height", Math.abs(p.y - start.y));
+});
+
+overlay.addEventListener("pointerup", (e) => {
+  if (!draft) return;
+  const p = pt(e);
+  const x = Math.min(start.x, p.x), y = Math.min(start.y, p.y);
+  const w = Math.abs(p.x - start.x), h = Math.abs(p.y - start.y);
+  draft.remove();
+  draft = null;
+  start = null;
+  if (w >= 8 && h >= 8) { addRect(x, y, w, h); persist(); }
+});
+
+document.querySelectorAll(".tool").forEach(btn => {
+  btn.addEventListener("click", () => setTool(btn.dataset.tool));
+});
+
+document.getElementById("clear").addEventListener("click", () => {
+  if (!annotations.length) return;
+  if (!confirm("清空所有标注？")) return;
+  clearAll(true);
+});
+
+document.getElementById("download").addEventListener("click", downloadJson);
+document.getElementById("download2").addEventListener("click", downloadJson);
+document.getElementById("copy").addEventListener("click", copyJson);
+document.getElementById("copy2").addEventListener("click", copyJson);
+document.getElementById("importFile").addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (file) importJson(file);
+  e.target.value = "";
+});
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    downloadJson();
+  }
+});
+
+try {
+  const raw = localStorage.getItem(STORE_KEY);
+  if (raw) {
+    const data = JSON.parse(raw);
+    if (data && data.image === IMAGE_NAME && Array.isArray(data.items)) {
+      for (const a of data.items) {
+        if (a.shape === "rect") addRect(a.x, a.y, a.w, a.h, a.comment || "", a.id);
+        else if (a.shape === "point") addPoint(a.x, a.y, a.comment || "", a.id);
+      }
+    }
+  }
+} catch (e) {}
+renderList();
+updateJson();
+</script>
+</body>
+</html>

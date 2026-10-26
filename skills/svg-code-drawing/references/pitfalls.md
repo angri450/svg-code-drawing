@@ -61,6 +61,7 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 | 箭头标签压线看不清 | 标签没底衬 | 标签下垫不透明背景矩形 |
 | 中文变成日文写法 | 字体名没装或取错 .ttc 变体 | check_font.py --check，写带地区后缀的精确名 |
 | PNG 导出报错 | 本机没有 SVG 渲染器 | export_png.py 自动试 resvg / rsvg-convert / Chromium；装其一 |
+| 127.0.0.1 打不开 | 浏览器在另一台机器，localhost 指错 | 用 `annotate_html.py` 单文件标注页，或走反代/端口 |
 | 导出的图几乎全是空白 | 直接渲染了没填内容的模板 | 模板是带 `{{占位符}}` 的起手稿，先用 generate-from-template.py 填内容 |
 | magick 出图字体全变默认字体 | 字体列表第一个名字本机没装 | 换成 check_font.py 确认过的字体名打头 |
 | 导出 PNG 有白边或不写出来 | Chromium 先退进程后写文件、SVG 固定宽高 | export_png.py 内部已处理 |

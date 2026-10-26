@@ -39,11 +39,30 @@ validate_svg.py 全部通过（data URI 不是 http 外链，可以过检）。
 
 ## 读图修改循环
 
+先判断浏览器在哪台机器。`127.0.0.1` 是回环地址，只指服务器自己；内置浏览器或远程浏览器打开只会“拒绝连接”。
+
+### 同一台机器：点选 SVG
+
 1. 在产物目录起 `uv run python -m http.server 8897`（避开被旧进程占用的端口），用 `bundle_html.py 成品.svg --title "审查标题"` 生成 HTML 壳并打开。HTML 内联版撑满窗格，每个元素是可点 DOM；文件名用 ASCII，中文名在 http.server 上 404。
-2. 用户在页面上圈出问题。
+2. 用户在页面上点选元素、圈出问题。
 3. 修法是改线稿 SVG 的坐标（如标题 y=46→82），重跑 moss_compose.py（秒级），浏览器刷新即见。
 4. 底图构图缺陷（纸太小、场景侵入）才重出背景；先修线稿坐标试一轮，确认是底图问题再重新生成。
 5. 循环到用户确认。每轮只合成一次。
+
+### 浏览器不在同一台机器：单文件标注页
+
+1. 不要起 `http.server`，也不要把 `127.0.0.1` 发给用户。运行：
+
+   ```bash
+   uv run --with pillow python scripts/annotate_html.py 成品.png --out review.html --title "图稿评审"
+   ```
+
+2. 把 HTML 发布成 artifact/分享链接，或直接把文件发给用户。页面自带图片，不需要服务器、端口、外链。
+3. 用户框选/点选，写说明，点“导出 JSON”或“复制 JSON”。
+4. 读 `annotations.json`，按 `rect`/`point` 坐标改 SVG，重跑 moss_compose.py。
+5. 重新导出 PNG，再生成一份新的标注页给用户复查。每轮只合成一次。
+
+详细字段和消费流程见 [annotation-review.md](annotation-review.md)。
 
 ## 第 0 步：模型门控（外部生图 MCP）
 
