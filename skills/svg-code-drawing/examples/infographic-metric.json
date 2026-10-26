@@ -1,0 +1,37 @@
+{
+  "width": 1536,
+  "height": 864,
+  "eyebrow": "推理时间账",
+  "title": "一张图 / 25步 / 616秒",
+  "subtitle": "MOSS-Image 本地推理 · P100 · 1536×864",
+  "metric": {
+    "value": "22.55s",
+    "label": "每步采样"
+  },
+  "bar": {
+    "total": 616.3,
+    "caption": "总耗时 616s",
+    "segments": [
+      {
+        "label": "加载与编码",
+        "value": 52.6,
+        "suffix": "s",
+        "color": "#D8D2C6",
+        "text_color": "#3F3F3F"
+      },
+      {
+        "label": "采样",
+        "value": 563.7,
+        "suffix": "s",
+        "color": "#8E1B2A",
+        "text_color": "#FFFFFF"
+      }
+    ]
+  },
+  "ticks": {
+    "count": 25,
+    "label": "25 步 × 22.55s"
+  },
+  "takeaway": "采样占 91.5%，瓶颈在 DiT 前向，不在加载。",
+  "source": "数据：本地单次运行，1536×864，25 步，CFG 3，seed 42。"
+}

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 864" width="1536" height="864" role="img" aria-labelledby="info-title">
+<title id="info-title">一张图 / 25步 / 616秒</title>
+<g font-family="'Noto Sans CJK SC', sans-serif">
+<text x="96" y="96" font-size="22" fill="#8E1B2A" letter-spacing="6">推理时间账</text>
+<text x="96" y="190" font-family="'Noto Serif CJK SC', serif" font-size="64" font-weight="700" fill="#8E1B2A">一张图 / 25步 / 616秒</text>
+<text x="100" y="252" font-size="28" fill="#6B6B6B">MOSS-Image 本地推理 · P100 · 1536×864</text>
+<line x1="96" y1="290" x2="700" y2="290" stroke="#C8102E" stroke-width="3"/>
+<text x="96" y="450" font-family="'Noto Serif CJK SC', serif" font-size="140" font-weight="700" fill="#8E1B2A">22.55s</text>
+<text x="100" y="500" font-size="24" fill="#6B6B6B">每步采样</text>
+<rect x="600.0" y="360" width="71.7" height="64" fill="#D8D2C6"/>
+<text x="612.0" y="332" font-size="22" fill="#6B6B6B">加载与编码 53s · 8.5%</text>
+<rect x="671.7" y="360" width="768.3" height="64" fill="#8E1B2A"/>
+<text x="1055.8" y="332" font-size="22" fill="#6B6B6B" text-anchor="middle">采样 564s</text>
+<text x="1055.8" y="402" font-size="26" fill="#FFFFFF" text-anchor="middle">91.5%</text>
+<text x="600" y="452" font-size="22" fill="#6B6B6B">总耗时 616s</text>
+<rect x="96" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="126" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="156" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="186" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="216" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="246" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="276" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="306" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="336" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="366" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="396" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="426" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="456" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="486" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="516" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="546" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="576" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="606" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="636" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="666" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="696" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="726" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="756" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="786" y="540" width="5" height="30" fill="#C8102E"/>
+<rect x="816" y="540" width="5" height="30" fill="#C8102E"/>
+<line x1="96" y1="578" x2="821" y2="578" stroke="#D8D2C6" stroke-width="1"/>
+<text x="96" y="612" font-size="22" fill="#6B6B6B">25 步 × 22.55s</text>
+<text x="96" y="700" font-family="'Noto Serif CJK SC', serif" font-size="32" font-weight="700" fill="#8E1B2A">采样占 91.5%，瓶颈在 DiT 前向，不在加载。</text>
+<text x="96" y="790" font-size="18" fill="#6B6B6B">数据：本地单次运行，1536×864，25 步，CFG 3，seed 42。</text>
+</g>
+</svg>
