@@ -60,27 +60,27 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 | 交叉箭头糊成一团 | 没画跳弧 | 5px 半径同色弧跳过，多处错开半径 |
 | 箭头标签压线看不清 | 标签没底衬 | 标签下垫不透明背景矩形 |
 | 中文变成日文写法 | 字体名没装或取错 .ttc 变体 | check_font.py --check，写带地区后缀的精确名 |
-| PNG 导出报错 | 本机无 rsvg-convert | export_png.py（Edge headless），或 magick |
+| PNG 导出报错 | 本机没有 SVG 渲染器 | export_png.py 自动试 resvg / rsvg-convert / Chromium；装其一 |
 | 导出的图几乎全是空白 | 直接渲染了没填内容的模板 | 模板是带 `{{占位符}}` 的起手稿，先用 generate-from-template.py 填内容 |
 | magick 出图字体全变默认字体 | 字体列表第一个名字本机没装 | 换成 check_font.py 确认过的字体名打头 |
-| 导出 PNG 有白边或不写出来 | Edge 先退进程后写文件、SVG 固定宽高 | export_png.py 内部已处理 |
+| 导出 PNG 有白边或不写出来 | Chromium 先退进程后写文件、SVG 固定宽高 | export_png.py 内部已处理 |
 | mermaid 环图灌成八千像素高 | 最长路径分层遇环膨胀 | mermaid_to_svg.py 内部已拆回边 |
 
-## 本机的 PNG 渲染路径（实测）
+## PNG 渲染路径
 
-两条能走通：
+`export_png.py` 按 resvg → rsvg-convert → Chromium 顺序自动尝试，`--renderer` 可强制指定：
 
-| 工具 | 命令 | 说明 |
+| 渲染器 | 安装 | 说明 |
 |---|---|---|
-| `scripts/export_png.py` | `python scripts/export_png.py 图.svg 图.png` | 默认首选。Edge headless，字体栈完整，尺寸可控 |
-| `magick`（ImageMagick 7.1.2-32，自带 librsvg 2.40.20） | `magick -density 192 -background none 图.svg 图.png` | 备选。中文和布局都正常，出图与 Edge 基本一致 |
+| resvg 可执行文件 | 自行安装 | 优先于 resvg-py |
+| resvg-py | `pip install resvg-py` | 最轻，中文正常，推荐 |
+| rsvg-convert | `apt install librsvg2-bin` | 系统包，稳定 |
+| Chromium / Edge | 装浏览器 | 滤镜/CSS 支持最好 |
 
-`cairosvg` 看着在，实际不能用：包装脚本在，但底层 DLL 加载失败，导入即报错。
+用 `uv run` 时可以直接带包：
 
-用 magick 的两个注意点：
+```bash
+uv run --with resvg-py python scripts/export_png.py 图.svg 图.png 1600
+```
 
-一、字体列表的第一个名字必须是本机装了的字体。magick 拿列表里的第一个名字当主字体，第一个没装就整份字体回退成 Sans，后面的名字不再尝试。web 字体栈 `-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` 在本机必然回退成 Sans，文字全变默认字体。生成器的 style 字体栈第一个是 `'Helvetica Neue'`（macOS 字体），Windows 本机没装，magick 渲染会整份回退；要 magick 出图就把第一个换成 `check_font.py --check` 确认过的名字（如 `'Segoe UI'`），或者直接用 `export_png.py`。
-
-二、`templates/` 里的原始文件是带 `{{TITLE}}` 这类占位符的起手模板，直接渲染出来的图几乎全是空白。那是模板没填，不是渲染失败，先跑 `generate-from-template.py` 填内容再渲染。
-
-调试 magick 时盯这两行输出：`couldn't load font ... falling back to "Sans"` 是字体没匹配上；`CSS unrecoverable error` 是 CSS 解析器在某一行卡住、这一段 CSS 全部丢掉。
+`cairosvg` 不作为默认链路：部分环境底层 DLL 加载失败，导入即报错。ImageMagick 仍可作备用，但字体栈第一个名字必须是本机装了的字体，否则整份回退成 Sans；`templates/` 里的 `{{TITLE}}` 模板要先填内容再渲染。

@@ -59,7 +59,7 @@
 3. **生成**：技术图用 `build_diagram.py` 起步（生成、校验、导出一条命令），工程图写 Python 脚本，有现成稿走导入器（Mermaid、draw.io）。
 4. **校验**：十类检查。目标为 PPT、打印、HMI 时加 `--portable`。
 5. **人机审查**：产物打成 HTML 壳，浏览器里点选元素，改坐标再合成，刷新复查。
-6. **交付**：出 PNG（Edge headless），保留原 SVG 与 HTML。
+6. **交付**：出 PNG（resvg / rsvg-convert / Chromium 自动降级），保留原 SVG 与 HTML。
 
 ## 字体
 
@@ -106,7 +106,7 @@ skills/svg-code-drawing/        skill 本体
     build_diagram.py            生成、校验、导出 PNG 一条命令
     check_font.py               字体名解析、.ttc 多语言集合检测、中英混排字体栈
     validate_svg.py             校验 10 类检查，--portable 面向 PPT/打印/HMI
-    export_png.py               出 PNG（Edge headless）
+    export_png.py               出 PNG（resvg / rsvg-convert / Chromium 自动降级）
     bundle_html.py              打 HTML 交付壳（响应式缩放、内联 DOM 可点选）
     academic_figure.py          期刊骨架生成（mm 坐标 + 变体）
     example_cell_figure.py      Cell 风成品范例

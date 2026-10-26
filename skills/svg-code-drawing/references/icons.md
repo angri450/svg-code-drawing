@@ -2,9 +2,9 @@
 
 ## 渲染器兼容性
 
-不用 `@import url()` 加载图标字体，Edge headless 与 librsvg 都不抓外部资源。图标用内联 SVG 的 `<path>`、`<circle>`、`<rect>`、`<text>` 组合。字体只用系统字体，写在 `<style>` 里。
+不用 `@import url()` 加载图标字体，resvg、librsvg 与 Chromium 都不抓外部资源。图标用内联 SVG 的 `<path>`、`<circle>`、`<rect>`、`<text>` 组合。字体只用系统字体，写在 `<style>` 里。
 
-本机导出 PNG 走 `scripts/export_png.py`（Edge headless），不依赖 rsvg-convert。
+导出 PNG 走 `scripts/export_png.py`，按 resvg / rsvg-convert / Chromium 自动降级。
 
 ## Generic Semantic Shapes
 

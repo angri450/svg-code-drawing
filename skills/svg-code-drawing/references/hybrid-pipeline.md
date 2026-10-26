@@ -11,10 +11,12 @@
 抠图、摆位、合成、自检全部由脚本完成，生成侧只读数字，不反复看图。
 
 ```bash
-uv run --with opencv-python-headless --with numpy python scripts/moss_compose.py \
+uv run --with opencv-python-headless --with numpy --with resvg-py python scripts/moss_compose.py \
   --bg 底.png --svg 线稿.svg --out 成品.svg [--png 成品.png] [--wide 1600] \
   --prop 工人.png:612:373:72 --prop 猫.png:238:396:46
 ```
+
+PNG 导出按 resvg → rsvg-convert → Chromium 自动降级；用 `uv run` 时带 `--with resvg-py` 就能直接出 PNG，也可以本机装 `rsvg-convert` 或 Chromium。
 
 --prop 格式 `路径:x:y:h`（viewBox 单位）；省略坐标时自动居中底部，h=60。路径解析兼容 Windows 盘符，从右往左剥坐标。
 

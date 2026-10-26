@@ -82,7 +82,7 @@ font-weight: 400 normal, 600 semi-bold for titles
 
 ## SVG Template
 
-样式表只用系统字体，不用 `@import`，因为渲染器（Edge headless、librsvg）都不抓外部资源。
+样式表只用系统字体，不用 `@import`，因为渲染器（resvg、librsvg、Chromium）都不抓外部资源。
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600"

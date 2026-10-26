@@ -2,7 +2,7 @@
 name: svg-code-drawing
 description: 用 SVG 代码画图：工程示意图、技术图、论文多面板图，中英混排字体可分开指定。触发词：画图、示意图、架构图、流程图、P&ID、论文配图、信息图、手绘风、SVG。
 license: Apache-2.0
-compatibility: Python 3.9+；PNG 导出需 Edge 或 Chrome
+compatibility: Python 3.9+；PNG 导出支持 resvg / rsvg-convert / Chromium 任一
 metadata:
   version: 3.1.1
 ---
@@ -35,7 +35,7 @@ metadata:
 3. 生成：技术图用 `scripts/build_diagram.py` 起步（生成、校验、导出一条命令），工程图写 Python 脚本（列表法），有现成稿走导入器。命令见 pitfalls.md。
 4. 校验：`uv run python scripts/validate_svg.py <svg>`（10 类检查）。目标为 PPT/打印/HMI 时加 `--portable`。
 5. 人机交互审查（所有路线以这一步收尾）：产物经 `bundle_html.py` 打成 HTML 壳（剥固定宽高、响应式缩放、内联 DOM 可点选）→ 在产物目录起 `uv run python -m http.server 8897`（文件名用 ASCII，中文名在 http.server 上 404）→ 浏览器工具开 `http://127.0.0.1:8897/<文件>.html` → 用户点选元素 → 改线稿坐标 → 重新合成 → 刷新复查。验收两条：元素、关系、文字齐全；缩到目标介质实际尺寸仍可读。裸开 SVG 有两个问题：固定宽高会缩成小块并留白边；裸 SVG 文档无法点选。
-6. 交付：用户确认后运行 `export_png.py`（Edge headless 出 PNG），保留原 SVG/HTML；`extract_brand.py` 可选，用于站点配色对齐。
+6. 交付：用户确认后运行 `export_png.py`（resvg / rsvg-convert / Chromium 自动降级出 PNG），保留原 SVG/HTML；用 `uv run` 时加 `--with resvg-py`，或本机装 `rsvg-convert`/Chromium；`extract_brand.py` 可选，用于站点配色对齐。
 
 ## 判定：走哪一半
 
@@ -54,6 +54,6 @@ metadata:
 
 ## 文件清单
 
-- `scripts/`：generate_three_styles.py（工程三件套）、generate-from-template.py（技术图 14 类型，支持 font_en/font_cn 中英混排）、build_diagram.py（生成、校验、导出一条命令）、check_font.py（字体名解析、.ttc 多语言集合检测、中英混排字体栈）、validate_svg.py（校验 + --portable）、export_png.py（PNG）、bundle_html.py（HTML 交付）、extract_brand.py（品牌色）、mermaid_to_svg.py 与 drawio_to_svg.py（导入）、academic_figure.py（期刊骨架）、example_cell_figure.py（Cell 风范例）、audit_figure.py（投稿审计）、moss_compose.py（底图 + 配件 + 线稿合成，水印可选）
+- `scripts/`：generate_three_styles.py（工程三件套）、generate-from-template.py（技术图 14 类型，支持 font_en/font_cn 中英混排）、build_diagram.py（生成、校验、导出一条命令）、check_font.py（字体名解析、.ttc 多语言集合检测、中英混排字体栈）、validate_svg.py（校验 + --portable）、export_png.py（PNG，resvg/rsvg-convert/Chromium）、bundle_html.py（HTML 交付）、extract_brand.py（品牌色）、mermaid_to_svg.py 与 drawio_to_svg.py（导入）、academic_figure.py（期刊骨架）、example_cell_figure.py（Cell 风范例）、audit_figure.py（投稿审计）、moss_compose.py（底图 + 配件 + 线稿合成，水印可选）
 - `templates/`：10 种技术图骨架，供手写起底，生成器只读取 viewBox
 - `references/`：上表各 reference、style-1..7、icons.md、svg-layout-best-practices.md、style-diagram-matrix.md

@@ -8,8 +8,10 @@ MOSS 版：配件默认不做去水印处理；素材确实带水印时显式加
     --prop 配件.png:x:y:h   可多次；x/y/h 为线稿 viewBox 单元（不写 x:y:h 则自动居中底部，h=60）
     --remove-watermark       去掉配件右下水印区（默认不做）
     --watermark-box x1,y1,x2,y2  自定义水印区，像素坐标，自动开启去水印
+    --renderer auto|resvg|rsvg|chrome  PNG 导出渲染器，默认 auto（resvg → rsvg → chrome）
 示例:
-  uv run python moss_compose.py --bg bg.png --svg pid.svg --out final.svg --png final.png \
+  uv run --with opencv-python-headless --with numpy --with resvg-py python moss_compose.py \
+    --bg bg.png --svg pid.svg --out final.svg --png final.png \
     --prop worker.png:612:373:72 --prop cat.png:238:396:46
   uv run python moss_compose.py --bg bg.png --svg pid.svg --out final.svg --remove-watermark
 """
@@ -19,6 +21,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -27,7 +30,7 @@ import numpy as np
 def 抠白裁边(
     src: Path,
     remove_watermark: bool = False,
-    watermark_box: tuple[int, int, int, int] | None = None,
+    watermark_box: Optional[tuple[int, int, int, int]] = None,
 ) -> tuple[bytes, int, int, float]:
     """近白连通域抠底 + 可选去右下水印 + alpha bbox 裁边。返回 (PNG字节, 宽, 高, 不透明占比)。"""
     bgr = cv2.imread(str(src))
@@ -92,6 +95,12 @@ def main():
     ap.add_argument("--png", default=None)
     ap.add_argument("--wide", type=int, default=1600)
     ap.add_argument(
+        "--renderer",
+        choices=["auto", "resvg", "rsvg", "chrome"],
+        default="auto",
+        help="PNG 导出渲染器，默认 auto（resvg → rsvg → chrome）",
+    )
+    ap.add_argument(
         "--remove-watermark",
         action="store_true",
         help="去掉配件右下水印区（默认不做；默认区域为右下 20%% 宽 × 7%% 高）",
@@ -154,7 +163,8 @@ def main():
 
     if args.png:
         r = subprocess.run([sys.executable, str(Path(__file__).parent / "export_png.py"),
-                            str(p), args.png, str(args.wide)], capture_output=True, text=True)
+                            str(p), args.png, str(args.wide), "--renderer", args.renderer],
+                           capture_output=True, text=True)
         print((r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr) else f"png exit={r.returncode}")
 
 
