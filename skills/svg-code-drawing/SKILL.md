@@ -19,7 +19,7 @@ metadata:
 | 手绘风（白板/粉笔/蓝图/水彩/方格纸/铜版雕刻/极简线稿/3D 等轴测） | [references/hand-drawn-styles.md](references/hand-drawn-styles.md) |
 | 技术图（架构/流程/时序/ER/状态机/甘特等 14 类型） | [references/diagram-types.md](references/diagram-types.md)，骨架 `templates/`，生成器 `scripts/generate-from-template.py` |
 | 论文/期刊多面板图（Cell/Nature 风、信息图、Graphical Abstract） | `references/academic/` 三份：journal-spec 版面数字、figure-workflow 工作流与图注、components 组件库；`scripts/academic_figure.py` 生成 mm 坐标骨架与 2-3 个变体；正样数据 `examples/academic-panels.json`、`examples/academic-arrows.json`；成品范例 `scripts/example_cell_figure.py`；投稿审计 `scripts/audit_figure.py`（字号 pt、色数、色盲、统计口径） |
-| 画风质感（吉卜力/日漫/水彩氛围底） | [references/hybrid-pipeline.md](references/hybrid-pipeline.md)，先做模型门控，再生图出底、SVG 线稿与文字叠印 |
+| 画风质感（吉卜力/日漫/水彩氛围底） | [references/hybrid-pipeline.md](references/hybrid-pipeline.md)，底图走本地 MOSS 或生图 MCP，SVG 线稿与文字叠印，合成脚本 `scripts/moss_compose.py` |
 | 技术图配色 | `references/style-1..7*.md`，默认 style-1；选型见 style-diagram-matrix.md |
 | 字体（中英混排、.ttc 集合规避、字体检查） | [references/fonts.md](references/fonts.md)，脚本 `scripts/check_font.py` |
 | 布局尺寸算术（居中、基线 0.35、盒高 3×字号、连接线、交付自查） | [references/layout-arithmetic.md](references/layout-arithmetic.md) |
@@ -54,6 +54,6 @@ metadata:
 
 ## 文件清单
 
-- `scripts/`：generate_three_styles.py（工程三件套）、generate-from-template.py（技术图 14 类型，支持 font_en/font_cn 中英混排）、build_diagram.py（生成、校验、导出一条命令）、check_font.py（字体名解析、.ttc 多语言集合检测、中英混排字体栈）、validate_svg.py（校验 + --portable）、export_png.py（PNG）、bundle_html.py（HTML 交付）、extract_brand.py（品牌色）、mermaid_to_svg.py 与 drawio_to_svg.py（导入）、academic_figure.py（期刊骨架）、example_cell_figure.py（Cell 风范例）、audit_figure.py（投稿审计）
+- `scripts/`：generate_three_styles.py（工程三件套）、generate-from-template.py（技术图 14 类型，支持 font_en/font_cn 中英混排）、build_diagram.py（生成、校验、导出一条命令）、check_font.py（字体名解析、.ttc 多语言集合检测、中英混排字体栈）、validate_svg.py（校验 + --portable）、export_png.py（PNG）、bundle_html.py（HTML 交付）、extract_brand.py（品牌色）、mermaid_to_svg.py 与 drawio_to_svg.py（导入）、academic_figure.py（期刊骨架）、example_cell_figure.py（Cell 风范例）、audit_figure.py（投稿审计）、moss_compose.py（底图 + 配件 + 线稿合成，水印可选）
 - `templates/`：10 种技术图骨架，供手写起底，生成器只读取 viewBox
 - `references/`：上表各 reference、style-1..7、icons.md、svg-layout-best-practices.md、style-diagram-matrix.md

@@ -114,7 +114,7 @@ skills/svg-code-drawing/        skill 本体
     mermaid_to_svg.py           导入 Mermaid
     drawio_to_svg.py            导入 draw.io
     extract_brand.py            站点品牌色提取
-    hybrid_compose.py           画风质感管线：生图出底 + SVG 线稿与文字叠印
+    moss_compose.py             画风质感管线：MOSS/生图出底 + SVG 线稿与文字叠印（水印可选）
   templates/                    10 种技术图骨架 SVG
   examples/                     论文面板数据样例（panels、arrows）
 assets/                         宣传物料：能力总览横幅、工作流图，附生成脚本与数据

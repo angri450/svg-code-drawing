@@ -1,18 +1,24 @@
 # 混合管线：画风归生图、文字归代码
 
-需要画风质感（吉卜力/日漫/水彩氛围）时走这条。SVG 管结构与文字，生图 MCP 管氛围，base64 内嵌合成单文件 SVG。
+需要画风质感（吉卜力/日漫/水彩氛围）时走这条。SVG 管结构与文字，MOSS 或生图 MCP 管氛围，base64 内嵌合成单文件 SVG。
 
-## 一键合成：hybrid_compose.py
+## MOSS 本地后端（默认）
+
+底图由本地 MOSS-Image 出：先用 `compile_prompt.py` 把留白要求编译成 Layout，再用 `moss_render.py` 按目标宽高出图；配件可以用 `moss_img2img.py` 或单独的文生图。走 MOSS 时跳过下面的“模型门控”，那一节只适用于外部生图 MCP。
+
+## 一键合成：moss_compose.py
 
 抠图、摆位、合成、自检全部由脚本完成，生成侧只读数字，不反复看图。
 
 ```bash
-uv run --with opencv-python-headless --with numpy python scripts/hybrid_compose.py \
+uv run --with opencv-python-headless --with numpy python scripts/moss_compose.py \
   --bg 底.png --svg 线稿.svg --out 成品.svg [--png 成品.png] [--wide 1600] \
   --prop 工人.png:612:373:72 --prop 猫.png:238:396:46
 ```
 
 --prop 格式 `路径:x:y:h`（viewBox 单位）；省略坐标时自动居中底部，h=60。路径解析兼容 Windows 盘符，从右往左剥坐标。
+
+配件默认不做去水印处理。素材确实带水印时加 `--remove-watermark`，默认清右下 20% 宽 × 7% 高；水印位置不固定时用 `--watermark-box x1,y1,x2,y2` 指定像素区域。
 
 数字验收线（全部达标即可，无需目检）：
 每个配件不透明占比 40-60% 为正常，低于 10% 判为抠图漏底，直接报错不出图；
@@ -33,11 +39,11 @@ validate_svg.py 全部通过（data URI 不是 http 外链，可以过检）。
 
 1. 在产物目录起 `uv run python -m http.server 8897`（避开被旧进程占用的端口），用 `bundle_html.py 成品.svg --title "审查标题"` 生成 HTML 壳并打开。HTML 内联版撑满窗格，每个元素是可点 DOM；文件名用 ASCII，中文名在 http.server 上 404。
 2. 用户在页面上圈出问题。
-3. 修法是改线稿 SVG 的坐标（如标题 y=46→82），重跑 hybrid_compose.py（秒级），浏览器刷新即见。
+3. 修法是改线稿 SVG 的坐标（如标题 y=46→82），重跑 moss_compose.py（秒级），浏览器刷新即见。
 4. 底图构图缺陷（纸太小、场景侵入）才重出背景；先修线稿坐标试一轮，确认是底图问题再重新生成。
 5. 循环到用户确认。每轮只合成一次。
 
-## 第 0 步：模型门控
+## 第 0 步：模型门控（外部生图 MCP）
 
 生图 MCP（`generate_image`）的入参随后端绘画模型变。先用最小参数探一次真实 schema：
 
@@ -57,7 +63,7 @@ validate_svg.py 全部通过（data URI 不是 http 外链，可以过检）。
 2. 算内容包围盒：标题最上、图例最下、最左/最右元素边缘，四周留 5-8% 余量。例：700×500 画布内容 x∈[40,660] y∈[40,452]，背景"必须空白"区约为全幅 92% 宽 × 90% 高。
 3. 氛围底：按包围盒写死留白承诺。prompt 模板："画面中央 {宽}% × {高}% 必须是干净空白纸面（无任何物体/文字/深色块），场景元素只允许出现在四周 {余量}% 的窄边框里"。比例数字按包围盒计算填入。改图模型在岗时反过来：拿线稿当参考，指令"线稿区域全部替换为空白纸面，只保留边缘装饰"。
 4. 配件小图（可选）：工人、动物、道具。prompt 要求"纯白背景、单主体、无阴影、无文字"。摆位对照线稿标签坐标，不压设备标签、图例、标题。
-5. 合成：优先走 hybrid_compose.py。手工合成时剥掉 SVG 纯色底纸矩形，最前面插入 `<image href="data:image/png;base64,…">` 铺满 viewBox（`preserveAspectRatio="xMidYMid slice"`）。
+5. 合成：优先走 moss_compose.py。手工合成时剥掉 SVG 纯色底纸矩形，最前面插入 `<image href="data:image/png;base64,…">` 铺满 viewBox（`preserveAspectRatio="xMidYMid slice"`）。
 6. 验收：按数字验收线，并目检"标题无暗底、标签无遮挡、设备全在纸上"。
 
 ## 三层布景：底图 + 配件层 + 线稿层
@@ -66,7 +72,7 @@ validate_svg.py 全部通过（data URI 不是 http 外链，可以过检）。
 
 1. 出配件：prompt 要求"纯白背景、单主体、无阴影、无文字"，白底是抠图前提。文生图模型直接出；改图模型拿已有图当参考。
 2. 抠图：不用洪水填充。水彩/手绘软边会渗漏，填充会沿抗锯齿边缘钻进角色内部。用连通域方案：近白阈值（亮度>228 且饱和度<30）→ connectedComponents → 只有贴画布边界的近白连通块判为背景。动画描边反而有利：内部浅色被黑线包住，与边界断开。
-3. 后处理：右下角水印区强制透明；按 alpha bbox 裁边；按目标尺寸换算 viewBox 坐标（700×500 画布中配件建议高 40-75 单位）。
+3. 后处理：默认不做去水印；素材确实带水印时加 `--remove-watermark`，或用 `--watermark-box` 指定区域。按 alpha bbox 裁边；按目标尺寸换算 viewBox 坐标（700×500 画布中配件建议高 40-75 单位）。
 4. 叠层顺序：底图 → 配件 `<image>`（脚对齐设备地面线 y≈440-445）→ 线稿与文字层。线稿在最上层，位号不被遮。
 5. 检查配件不透明占比（正常 40-60%），低于 10% 说明抠漏，回到第 2 步。
 
