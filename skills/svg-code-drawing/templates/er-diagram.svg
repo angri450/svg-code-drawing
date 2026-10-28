@@ -5,7 +5,7 @@
     </marker>
   </defs>
   <style>
-    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    text { font-family: 'Times New Roman','FangSong SC',serif; }
     .title { font-size: 24px; font-weight: 700; fill: #1e293b; }
     .entity-name { font-size: 15px; font-weight: 700; fill: #1e293b; }
     .attribute { font-size: 12px; font-weight: 400; fill: #475569; }

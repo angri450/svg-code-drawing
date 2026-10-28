@@ -4,8 +4,8 @@
 """
 import math
 
-FONT = "'Segoe UI','Helvetica Neue',Arial,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif"
-FONT_HAND = "'Segoe Print','楷体',cursive"
+FONT = "'Times New Roman','FangSong SC',serif"
+FONT_HAND = "'Times New Roman','FangSong SC',cursive"
 
 
 def panel_pencil():
@@ -192,7 +192,7 @@ def panel_render():
 def main():
     html = f'''<!DOCTYPE html>
 <html lang="zh"><head><meta charset="utf-8"><title>同一台储罐 · 三种风格</title></head>
-<body style="margin:0;background:#e9edf1;font-family:{FONT}">
+<body style="margin:0;background:#e9edf1;font-family: 'Times New Roman','FangSong SC',serif">
 <h1 style="margin:14px 20px;font-size:17px;font-weight:600">同一台储罐 · 三种视觉风格 —— 全部由代码绘制（未调用文生图）</h1>
 <div style="display:flex;flex-wrap:wrap;gap:16px;padding:0 20px 24px">
   <div style="background:#fff;padding:8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.15)">{panel_pencil()}</div>

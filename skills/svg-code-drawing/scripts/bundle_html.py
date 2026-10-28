@@ -10,7 +10,7 @@ from pathlib import Path
 
 审查层 = """
 <style>
-  .insp-tip{position:fixed;z-index:99;background:#111c27;color:#e2e8f0;font:12px/1.5 'Microsoft YaHei';
+  .insp-tip{position:fixed;z-index:99;background:#111c27;color:#e2e8f0;font:12px/1.5 'FangSong SC','Times New Roman',serif;
     padding:5px 10px;border-radius:6px;pointer-events:none;max-width:340px;white-space:pre-wrap}
   .insp-on [data-insp]:hover{outline:2px dashed #2563eb;outline-offset:2px;cursor:crosshair}
   .insp-on [data-insp].insp-sel{outline:2px solid #e11d48!important}
@@ -78,7 +78,7 @@ def main():
     html = f"""<!DOCTYPE html>
 <html lang="zh"><head><meta charset="utf-8"><title>{标题}</title>
 <style>
-  body {{ margin:0; background:#eef1f4; font-family:'Microsoft YaHei',sans-serif; }}
+  body {{ margin:0; background:#eef1f4; font-family:'Times New Roman','FangSong SC',serif; }}
   h1 {{ margin:18px 24px 10px; font-size:18px; font-weight:600; }}
   .board {{ background:#fff; margin:16px 20px; padding:12px; border-radius:10px;
            box-shadow:0 2px 10px rgba(0,0,0,.12); }}

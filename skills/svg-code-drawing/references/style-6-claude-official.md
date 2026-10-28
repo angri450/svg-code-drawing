@@ -29,8 +29,8 @@ Arrow color:     #5a5a5a
 ## Typography
 
 ```
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue',
-             Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif
+font-family: -apple-system, BlinkMacSystemFont, 'Times New Roman', 'Times New Roman',
+             Arial, 'FangSong SC', sans-serif
 font-size:   16px node labels, 14px descriptions, 13px arrow labels
 font-weight: 600 for node labels, 400 for descriptions, 700 for titles
 ```
@@ -140,8 +140,8 @@ font-weight: 600 for node labels, 400 for descriptions, 700 for titles
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600"
      width="960" height="600">
   <style>
-    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                   'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif;
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Times New Roman',
+                   'Times New Roman', Arial, 'FangSong SC', sans-serif;
     }
   </style>
   <defs>

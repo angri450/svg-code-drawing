@@ -69,7 +69,7 @@ MARKER_IDS = {
 STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     1: {
         "name": "Flat Icon",
-        "font_family": "'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif",
+        "font_family": "'Times New Roman','FangSong SC',serif",
         "background": "#ffffff",
         "shadow": True,
         "title_align": "center",
@@ -110,7 +110,7 @@ STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     },
     2: {
         "name": "Dark Terminal",
-        "font_family": "'SF Mono', 'Fira Code', Menlo, 'Microsoft YaHei', 'SimHei', monospace",
+        "font_family": "'Times New Roman','FangSong SC',monospace",
         "background": "#0f172a",
         "shadow": False,
         "title_align": "center",
@@ -151,7 +151,7 @@ STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     },
     3: {
         "name": "Blueprint",
-        "font_family": "'SF Mono', 'Fira Code', Menlo, 'Microsoft YaHei', 'SimHei', monospace",
+        "font_family": "'Times New Roman','FangSong SC',monospace",
         "background": "#082f49",
         "shadow": False,
         "title_align": "center",
@@ -192,7 +192,7 @@ STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     },
     4: {
         "name": "Notion Clean",
-        "font_family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif",
+        "font_family": "'Times New Roman','FangSong SC',serif",
         "background": "#ffffff",
         "shadow": False,
         "title_align": "left",
@@ -233,7 +233,7 @@ STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     },
     5: {
         "name": "Glassmorphism",
-        "font_family": "'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif",
+        "font_family": "'Times New Roman','FangSong SC',serif",
         "background": "#0f172a",
         "shadow": True,
         "title_align": "center",
@@ -274,7 +274,7 @@ STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     },
     6: {
         "name": "Claude Official",
-        "font_family": "'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif",
+        "font_family": "'Times New Roman','FangSong SC',serif",
         "background": "#f8f6f3",
         "shadow": False,
         "title_align": "left",
@@ -315,7 +315,7 @@ STYLE_PROFILES: Dict[int, Dict[str, object]] = {
     },
     7: {
         "name": "OpenAI",
-        "font_family": "'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif",
+        "font_family": "'Times New Roman','FangSong SC',serif",
         "background": "#ffffff",
         "shadow": False,
         "title_align": "left",
@@ -537,8 +537,14 @@ def title_position(style: Dict[str, object], width: float) -> Tuple[float, str]:
 
 
 def render_title_block(style: Dict[str, object], data: Dict[str, object], width: float) -> Tuple[str, float]:
-    title = normalize_text(data.get("title", "Diagram"))
-    subtitle = normalize_text(data.get("subtitle", ""))
+    # 标题显式给空串时不画标题块，也不要用 "Diagram" 兜底。
+    # 只有键完全缺失时才用默认值，标题给空串是"我不要标题"的意思。
+    title = normalize_text(data.get("title") or "")
+    subtitle = normalize_text(data.get("subtitle") or "")
+    if not title and not subtitle:
+        return "", 40.0
+    if not title:
+        title = "Diagram"
     x, anchor = title_position(style, width)
     if anchor == "middle":
         parts = [f'  <text x="{x}" y="56" text-anchor="{anchor}" class="title">{title}</text>']

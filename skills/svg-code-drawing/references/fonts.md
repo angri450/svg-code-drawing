@@ -23,7 +23,7 @@ font-family: 'Georgia', '宋体', sans-serif;
 **一、多语言集合取错变体。** Noto Sans CJK、Source Han Sans 这类集合，一个文件含简中、繁中、日文、韩文、香港五个变体，裸名字按索引 0 取，而索引 0 常是日文。修法是写带地区后缀的精确名：
 
 ```
-'Noto Sans CJK SC'      ← 正确
+'FangSong SC'      ← 正确
 'Noto Sans CJK'         ← 裸名，可能取到日文变体
 ```
 
@@ -40,17 +40,17 @@ Windows 自带的 simsun.ttc（SimSun + NSimSun）、msyh.ttc（YaHei + YaHei UI
 uv run --with fonttools python scripts/check_font.py --check "宋体" "Noto Sans CJK"
 
 # 生成中英混排字体栈
-uv run --with fonttools python scripts/check_font.py --stack --cn 微软雅黑 --en "Helvetica Neue"
+uv run --with fonttools python scripts/check_font.py --stack --cn 微软雅黑 --en "Times New Roman"
 
 # 列出系统里含中日韩字形的字体
 uv run --with fonttools python scripts/check_font.py --list --cjk
 ```
 
-`--check` 对多语言集合会给建议（`建议写成带地区后缀的精确名：'Noto Sans CJK SC'`），对未安装的字体点名后果（回退到默认字体的风险）。退出码非零表示有问题。
+`--check` 对多语言集合会给建议（`建议写成带地区后缀的精确名：'FangSong SC'`），对未安装的字体点名后果（回退到默认字体的风险）。退出码非零表示有问题。
 
 ## 本机实测（Windows 11）
 
-`check_font.py --check` 在本机的结果：宋体命中 simsun.ttc 索引 0，微软雅黑命中 msyh.ttc 索引 0，Noto Sans CJK 未安装。所以本机的中文字体写 `'Microsoft YaHei'` 或 `'宋体'` 都能命中，不要拿 `'Noto Sans CJK'` 兜底（没装，会被静默回退）。
+`check_font.py --check` 在本机的结果：宋体命中 simsun.ttc 索引 0，微软雅黑命中 msyh.ttc 索引 0，Noto Sans CJK 未安装。所以本机的中文字体写 `'FangSong SC'` 或 `'宋体'` 都能命中，不要拿 `'Noto Sans CJK'` 兜底（没装，会被静默回退）。
 
 未安装的名字会被渲染器静默回退到默认字体，中文可能出日文字形，所以每加一个新字体名先跑一次 `--check`。
 
@@ -58,10 +58,10 @@ uv run --with fonttools python scripts/check_font.py --list --cjk
 
 | 中文 | 英文 | 场景 |
 |---|---|---|
-| 微软雅黑 | Segoe UI、Helvetica Neue | 屏幕、通用 |
+| 微软雅黑 | 'Times New Roman'、'Times New Roman' | 屏幕、通用 |
 | 宋体 | Times New Roman、Georgia | 正式、印刷 |
-| 黑体 | Arial、Segoe UI Semibold | 强调、标题 |
+| 黑体 | Arial、'Times New Roman' Semibold | 强调、标题 |
 | Noto Sans SC | Inter、Source Sans | 开源、跨平台 |
 | 楷体 | Georgia | 手写感 |
 
-英文字体名在 Windows 上优先选自带的（Segoe UI、Georgia、Times New Roman、Arial、Consolas），macOS 场景用 Helvetica Neue、SF Pro，Linux 场景用 DejaVu、Liberation。链上写多个，缺哪个回退哪个。
+英文字体名在 Windows 上优先选自带的（'Times New Roman'、Georgia、Times New Roman、Arial、Consolas），macOS 场景用 'Times New Roman'、SF Pro，Linux 场景用 DejaVu、Liberation。链上写多个，缺哪个回退哪个。

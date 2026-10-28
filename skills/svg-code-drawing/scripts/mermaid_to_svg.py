@@ -10,7 +10,7 @@ import re
 import sys
 from pathlib import Path
 
-字体栈 = "'Segoe UI','Helvetica Neue',Arial,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif"
+字体栈 = "'Times New Roman','FangSong SC',serif"
 节点色, 文字色, 边色 = "#f8fafc", "#1e293b", "#2563eb"
 描边 = "#334155"
 字号 = 14

@@ -67,7 +67,7 @@ SVG 没有真正的 backdrop-filter，用多层矩形模拟：内阴影、玻璃
 ## Typography
 
 ```
-font-family: 'Inter', -apple-system, 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif
+font-family: 'Times New Roman', -apple-system, 'SF Pro Display', 'FangSong SC', sans-serif
 font-size:   14px labels, 12px sublabels, 20px hero title
 font-weight: 400 normal, 600 semi-bold, 700 bold titles
 ```
@@ -107,7 +107,7 @@ font-weight: 400 normal, 600 semi-bold, 700 bold titles
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600"
      width="960" height="600">
   <style>
-    text { font-family: 'Inter', -apple-system, 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; fill: #f0f6fc; }
+    text { font-family: 'Times New Roman', -apple-system, 'SF Pro Display', 'FangSong SC', sans-serif; fill: #f0f6fc; }
   </style>
   <defs>
   </defs>

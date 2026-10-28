@@ -30,8 +30,7 @@ Icon accent backgrounds:
 ## Typography
 
 ```
-font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC',
-             'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif
+font-family: 'Times New Roman', Helvetica, Arial, 'FangSong SC', sans-serif
 font-size:   14px labels, 12px sub-labels, 16px titles
 font-weight: 400 normal, 600 semi-bold for titles
 ```
@@ -88,7 +87,7 @@ font-weight: 400 normal, 600 semi-bold for titles
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600"
      width="960" height="600">
   <style>
-    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', 'Microsoft JhengHei', 'SimHei', sans-serif; }
+    text { font-family: 'Times New Roman', Helvetica, Arial, 'FangSong SC', sans-serif; }
   </style>
   <defs>
   </defs>

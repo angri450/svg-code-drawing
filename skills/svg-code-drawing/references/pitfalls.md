@@ -39,7 +39,7 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 
 - viewBox 定画布（逻辑图 960x600，工程图 700x500）；容器加 `style="max-width:100%;height:auto"` 做响应式。
 - id 全文档唯一：多画板一页时 filter/gradient/pattern/clipPath 的 id 加画板前缀，否则滤镜串引用。
-- CJK 字体栈带 fallback 链，英文名在前、中文名在后：`'Segoe UI','Helvetica Neue',Arial,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif`；雅黑只在 Windows 有，缺链换机会掉字。链上的名字本机必须先跑 `check_font.py --check` 查一遍，没装的字体名会被静默回退，中文可能出日文字形。
+- CJK 字体栈带 fallback 链，英文名在前、中文名在后：`'Times New Roman','Times New Roman',Arial,'FangSong SC', sans-serif`；雅黑只在 Windows 有，缺链换机会掉字。链上的名字本机必须先跑 `check_font.py --check` 查一遍，没装的字体名会被静默回退，中文可能出日文字形。
 - 文字字号不小于 12；引出线标注右对齐 `text-anchor="end"`。
 - 椭圆弧不用硬凑 A 命令 sweep flag：用 Q 二次曲线（控制点取弧顶下 4/3 处）或采样 polyline。
 
