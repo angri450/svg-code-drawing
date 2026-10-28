@@ -1565,7 +1565,24 @@ def build_svg(template_type: str, data: Dict[str, object]) -> str:
     node_obstacles = [node.bounds for node in normalized_nodes]
     route_obstacles = node_obstacles + reserved_bounds
     label_obstacles = node_obstacles + reserved_bounds
-    for arrow in arrows_data:
+    for 序号, arrow in enumerate(arrows_data):
+        # 箭头的 source/target 写错节点 id 时，两端都解析不出来，
+        # 路径会退化成零长度的 "M 0,0"，图上是一根看不见的线。
+        # 这里明确报错，别让错的 id 悄悄变成一张空图。
+        for 键 in ("source", "target"):
+            值 = arrow.get(键)
+            if 值 and str(值) not in node_map:
+                raise SystemExit(
+                    f"Error: 第 {序号 + 1} 根箭头的 {键}={值!r} 找不到对应节点。"
+                    f"现有节点 id：{sorted(node_map.keys())}"
+                )
+        # 既没给节点也没给坐标，说明 source/target 字段名写错了
+        # （本脚本用 source/target，不是 from/to）。
+        if not arrow.get("source") and not arrow.get("target") and "x1" not in arrow:
+            raise SystemExit(
+                f"Error: 第 {序号 + 1} 根箭头既没有 source/target 也没有 x1/y1/x2/y2 坐标。"
+                f"字段名是 source 和 target，不是 from 和 to。"
+            )
         path_svg, label_svg, label_bounds = render_arrow(arrow, style, node_map, route_obstacles, label_obstacles)
         arrow_paths.append(path_svg)
         if label_svg:

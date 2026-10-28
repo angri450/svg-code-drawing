@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
-"""SVG → PNG 导出：resvg → rsvg-convert → Chromium/Edge 自动降级。
+"""SVG → PNG 导出：resvg → rsvg-convert → cairosvg → Chromium/Edge 自动降级。
 
 用法:
-  python export_png.py <in.svg> [out.png] [目标宽px，默认1600] [--renderer auto|resvg|rsvg|chrome]
+  python export_png.py <in.svg> [out.png] [目标宽px，默认1600] [--renderer auto|resvg|rsvg|cairo|chrome]
 
 渲染器:
   resvg    优先 resvg 可执行文件，其次 Python 包 resvg-py（pip install resvg-py）
   rsvg     librsvg 的 rsvg-convert（apt install librsvg2-bin）
+  cairo    Python 包 cairosvg（pip install cairosvg），纯 Python 无外部依赖
   chrome   Edge/Chrome headless 截图
-  auto     按 resvg → rsvg → chrome 顺序尝试
+  auto     按 resvg → rsvg → cairo → chrome 顺序尝试
+
+cairosvg 单独用时有个坑：它算 SVG marker 的朝向角时，路径只有一个点
+（起点终点重合）会算出 None，接着 rotate(None) 崩掉。降级路径里先把这类
+退化 path 的 marker 属性摘掉，其余图形照常渲染。
 """
 import argparse
 import os
@@ -108,6 +113,54 @@ def render_rsvg(svg: Path, out: Path, width: int, height: int) -> bool:
     return False
 
 
+def 摘掉退化箭头(svg: Path) -> Path:
+    """把只有起点、终点重合的 path 上的 marker 属性去掉，另存一份。
+
+    cairosvg 算 marker 朝向角时，单点 path 算不出角度，rotate(None) 直接崩。
+    这种 path 本身画不出箭头，摘掉 marker 不影响画面。
+    """
+    文本 = svg.read_text(encoding="utf-8", errors="replace")
+
+    def 判断(match: re.Match) -> str:
+        整段 = match.group(0)
+        d = re.search(r'\sd="([^"]*)"', 整段)
+        if not d:
+            return 整段
+        点 = re.findall(r'-?\d+(?:\.\d+)?', d.group(1))
+        if len(点) < 2:
+            return 整段
+        # 只有一组坐标即 M x,y：起终点重合，算不出朝向角
+        if len(点) == 2:
+            return re.sub(r'\smarker-(start|mid|end)="[^"]*"', "", 整段)
+        return 整段
+
+    改后 = re.sub(r'<path\b[^>]*/?>', 判断, 文本)
+    if 改后 == 文本:
+        return svg
+    临时 = Path(tempfile.mkdtemp(prefix="svg2png-")) / "no-degenerate-marker.svg"
+    临时.write_text(改后, encoding="utf-8")
+    return 临时
+
+
+def render_cairosvg(svg: Path, out: Path, width: int, height: int) -> bool:
+    try:
+        import cairosvg
+    except ImportError:
+        return False
+
+    for 源 in (svg, 摘掉退化箭头(svg)):
+        try:
+            cairosvg.svg2png(url=str(源), write_to=str(out), output_width=width)
+            if out.is_file() and out.stat().st_size > 0:
+                print(f"✓ {out}  ({out.stat().st_size} bytes, {width}x{height}, cairosvg)")
+                return True
+        except Exception as e:
+            print(f"  cairosvg 失败: {type(e).__name__}: {e}")
+        if 源 is not svg:
+            continue
+    return False
+
+
 def render_chrome(svg: Path, out: Path, width: int, height: int) -> bool:
     浏览器 = find_browser()
     if not 浏览器:
@@ -158,9 +211,9 @@ def main():
     ap.add_argument("width", nargs="?", type=int, default=1600, help="目标宽 px，默认 1600")
     ap.add_argument(
         "--renderer",
-        choices=["auto", "resvg", "rsvg", "chrome"],
+        choices=["auto", "resvg", "rsvg", "cairo", "chrome"],
         default="auto",
-        help="渲染器，默认 auto（resvg → rsvg → chrome）",
+        help="渲染器，默认 auto（resvg → rsvg → cairo → chrome）",
     )
     args = ap.parse_args()
 
@@ -177,12 +230,14 @@ def main():
         sys.exit(1)
     高 = max(1, round(args.width * vh / vw))
 
-    顺序 = ["resvg", "rsvg", "chrome"] if args.renderer == "auto" else [args.renderer]
+    顺序 = ["resvg", "rsvg", "cairo", "chrome"] if args.renderer == "auto" else [args.renderer]
     for 名称 in 顺序:
         if 名称 == "resvg":
             ok = render_resvg(源, 输出, args.width, 高)
         elif 名称 == "rsvg":
             ok = render_rsvg(源, 输出, args.width, 高)
+        elif 名称 == "cairo":
+            ok = render_cairosvg(源, 输出, args.width, 高)
         else:
             ok = render_chrome(源, 输出, args.width, 高)
         if ok:
@@ -191,6 +246,7 @@ def main():
     print("Error: 没有可用的 SVG 渲染器。至少装一个：")
     print("  pip install resvg-py")
     print("  sudo apt install librsvg2-bin")
+    print("  pip install cairosvg")
     print("  或安装 Chromium/Chrome")
     sys.exit(2)
 

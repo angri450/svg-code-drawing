@@ -20,7 +20,7 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 | `containers[]` | 顶层 | 每项给 `label`、`x`、`y`、`width`、`height`，可选 `subtitle`、`side_label`、`fill`、`stroke` |
 | `legend[]` | 顶层 | 每项给 `label`、`flow`、`color`；图例带底衬在顶层加 `legend_box` |
 
-连线写 `source` 和 `target`，不是 `from` 和 `to`。写错键名不报错，连线直接不画出来。`source_port` 和 `target_port` 取 left/right/top/bottom，不写就自动判断方向；`route_points` 给出中间转折点，用来避开别的节点。`flow` 取 read/control 之类，决定线色。
+连线写 `source` 和 `target`，不是 `from` 和 `to`。写错键名或节点 id 时生成器会明确报错并列出现有的节点 id，不再像以前那样悄悄画出一张没有连线的图。`source_port` 和 `target_port` 取 left/right/top/bottom，不写就自动判断方向；`route_points` 给出中间转折点，用来避开别的节点。`flow` 取 read/control 之类，决定线色。
 
 生成器自己会做好的事，不用再写后处理脚本：
 
@@ -60,7 +60,7 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 | 交叉箭头糊成一团 | 没画跳弧 | 5px 半径同色弧跳过，多处错开半径 |
 | 箭头标签压线看不清 | 标签没底衬 | 标签下垫不透明背景矩形 |
 | 中文变成日文写法 | 字体名没装或取错 .ttc 变体 | check_font.py --check，写带地区后缀的精确名 |
-| PNG 导出报错 | 本机没有 SVG 渲染器 | export_png.py 自动试 resvg / rsvg-convert / Chromium；装其一 |
+| PNG 导出报错 | 本机没有 SVG 渲染器 | export_png.py 自动试 resvg / rsvg-convert / cairosvg / Chromium；装其一 |
 | 127.0.0.1 打不开 | 浏览器在另一台机器，localhost 指错 | 用 `annotate_html.py` 单文件标注页，或走反代/端口 |
 | 信息图标签挤在一起 | 窄段标签太长 | 缩短标签、拆段，或改成横向条形+图例 |
 | 信息图数字和条不一致 | 手改了 SVG 没改 spec | 改 JSON 规格，重跑 `build_infographic.py` |
@@ -71,13 +71,14 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 
 ## PNG 渲染路径
 
-`export_png.py` 按 resvg → rsvg-convert → Chromium 顺序自动尝试，`--renderer` 可强制指定：
+`export_png.py` 按 resvg → rsvg-convert → cairosvg → Chromium 顺序自动尝试，`--renderer` 可强制指定：
 
 | 渲染器 | 安装 | 说明 |
 |---|---|---|
 | resvg 可执行文件 | 自行安装 | 优先于 resvg-py |
 | resvg-py | `pip install resvg-py` | 最轻，中文正常，推荐 |
 | rsvg-convert | `apt install librsvg2-bin` | 系统包，稳定 |
+| cairosvg | `pip install cairosvg` | 纯 Python，无外部二进制；本机系统 python3 里有 2.9.1，各专用环境里没装 |
 | Chromium / Edge | 装浏览器 | 滤镜/CSS 支持最好 |
 
 用 `uv run` 时可以直接带包：
@@ -86,4 +87,6 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 uv run --with resvg-py python scripts/export_png.py 图.svg 图.png 1600
 ```
 
-`cairosvg` 不作为默认链路：部分环境底层 DLL 加载失败，导入即报错。ImageMagick 仍可作备用，但字体栈第一个名字必须是本机装了的字体，否则整份回退成 Sans；`templates/` 里的 `{{TITLE}}` 模板要先填内容再渲染。
+cairosvg 排在 Chromium 前面当兜底：它只依赖 Python 包，装上就能用，不用额外装浏览器或系统二进制。**它自己有个坑**：算 SVG marker 的朝向角时，路径只有一个点（起终点重合）会算出 None，接着 `rotate(None)` 崩掉。脚本会先摘掉这类退化 path 的 marker 再渲染，其余图形不受影响。上面那些箭头 id 写错时生成的零长度箭头就是这种形状。
+
+ImageMagick 仍可作备用，但字体栈第一个名字必须是本机装了的字体，否则整份回退成 Sans；`templates/` 里的 `{{TITLE}}` 模板要先填内容再渲染。

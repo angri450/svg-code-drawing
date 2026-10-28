@@ -8,7 +8,8 @@
 说明:
   --type   14 种图型之一（agent/architecture/class/comparison/data-flow/er-diagram/
            flowchart/memory/mind-map/network-topology/sequence/state-machine/timeline/use-case）
-  --data   传给 generate-from-template.py 的 JSON；不给就从 stdin 读
+  --data   传给 generate-from-template.py 的数据；可以给 JSON 文件路径，
+           也可以直接给 JSON 串，不给就从 stdin 读
   --style  1-7 配色风格，默认 1
   --portable 目标要进 PPT/打印/HMI/PDF 时加，校验会拦下 filter/mask/clipPath 等脆件
 """
@@ -39,7 +40,12 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="生成 + 校验 + 导出 PNG")
     ap.add_argument("--type", required=True, choices=图型)
     ap.add_argument("--out", required=True, help="输出 SVG 路径")
-    ap.add_argument("--data", default=None, help="生成用 JSON；不给从 stdin 读")
+    ap.add_argument(
+        "--data",
+        default=None,
+        help="生成用数据。可以给 JSON 文件路径，也可以直接给 JSON 串；"
+             "不给从 stdin 读",
+    )
     ap.add_argument("--style", default="1", help="配色风格 1-7 或风格名，默认 1")
     ap.add_argument("--png", default=None, help="同时导出 PNG 到这个路径")
     ap.add_argument("--width", type=int, default=1920, help="PNG 目标宽度")
@@ -48,10 +54,23 @@ def main() -> None:
     args = ap.parse_args()
 
     raw = args.data if args.data is not None else sys.stdin.read()
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError as e:
-        print(f"Error: JSON 解析失败: {e}", file=sys.stderr)
+    # --data 给文件路径时读文件，给 JSON 串时直接解析。两种都试，
+    # 免得传了路径却报"JSON 解析失败"，看不出是路径写错还是内容错。
+    候选 = [raw]
+    看起来是路径 = raw.strip().startswith("{") is False
+    if 看起来是路径:
+        候选.insert(0, Path(raw).read_text(encoding="utf-8") if Path(raw).is_file() else raw)
+    最后错误 = None
+    for 试 in 候选:
+        try:
+            data = json.loads(试)
+            break
+        except json.JSONDecodeError as e:
+            最后错误 = e
+    else:
+        print(f"Error: JSON 解析失败: {最后错误}", file=sys.stderr)
+        if 看起来是路径 and not Path(raw).is_file():
+            print(f"       找不到文件 {raw}", file=sys.stderr)
         sys.exit(1)
     data.setdefault("style", args.style)
 
