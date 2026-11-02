@@ -26,7 +26,7 @@
 
 本仓是 [Agent Plugins 1.0.0](https://agent-plugins.org/specification) 标准包：根有 `plugin.json`，skill 本体在 `skills/svg-code-drawing/`。
 
-支持该规范的客户端直接添加本仓地址即可。不支持的客户端，把 `skills/svg-code-drawing/` 整个目录拷进 skill 目录（Cherry Studio 的 skill 根目录在 `Data/Skills`，本机为 `C:\Users\Administrator\AppData\Roaming\CherryStudio\Data\Skills`）。
+支持该规范的客户端直接添加本仓地址即可。不支持的客户端，把 `skills/svg-code-drawing/` 整个目录拷进 skill 目录（Cherry Studio 的 skill 根目录是 `Data/Skills`）。
 
 ## 能画什么
 
