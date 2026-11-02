@@ -11,7 +11,7 @@ metadata:
 
 不调文生图，纯代码写 SVG。文字用系统字体直排，结构坐标逐点计算。
 
-本 skill 负责单张图。要做多页演示文稿，走本工作区的 `code/ppt_styles`：25 个版式骨架、16 套风格、直接输出 .pptx，见路线图最后一行。
+本 skill 负责单张图。要做多页演示文稿，走本机的 pptx 工具链，见路线图「多页 PPT」一行。
 
 ## 路线图（按需加载）
 
@@ -26,8 +26,8 @@ metadata:
 | 自由曲线（河流、飘带、山脊、卷轴这类「像活的」曲线） | [references/curve-composition.md](references/curve-composition.md)，生成器 `scripts/curve_builder.py`，样例 `examples/curve-river.json` |
 | 画风质感（吉卜力/日漫/水彩氛围底） | [references/hybrid-pipeline.md](references/hybrid-pipeline.md)，底图走 MiniMax 出图通道，SVG 线稿与文字叠印，合成脚本 `scripts/compose_layers.py` |
 | 读图评审、在图上框选/点选标注 | [references/annotation-review.md](references/annotation-review.md)，脚本 `scripts/annotate_html.py` |
-| 多页 PPT / 演示文稿（25 版式、16 风格、输出 .pptx） | 本工作区 `code/ppt_styles`：先在 `gallery.html` 选版式和风格，导出 JSON，再跑 `python code/ppt_styles/build_deck.py decks/deck.json out.pptx`；单页要整张成品图时，用本 skill 的 `compose_layers.py` 合成、`export_png.py` 导出，deck 里写 `image` 字段；只是版式内某处放照片则写 `photo`。生成后的检查项见 [references/pptx-pitfalls.md](references/pptx-pitfalls.md) |
-| pptx 零件（图片形态、图片墙、蜂巢、三线表） | [references/pptx-parts.md](references/pptx-parts.md)，选择界面在 `code/ppt_styles/parts.html`，页面 spec 里用 `parts` 字段调用 |
+| 多页 PPT / 演示文稿 | 多页 deck 走本机的 pptx 工具链（本机是 `slides` 目录的 pptxgenjs 路线）；deck 里要放整张成品图时，用本 skill 的 `compose_layers.py` 合成、`export_png.py` 导出，再写进 image 字段。生成后的检查项见 [references/pptx-pitfalls.md](references/pptx-pitfalls.md) |
+| pptx 零件（图片形态、图片墙、蜂巢、三线表） | [references/pptx-parts.md](references/pptx-parts.md)，形状规格与比例规则 |
 | 技术图配色 | `references/style-1..7*.md`，默认 style-1；选型见 style-diagram-matrix.md |
 | 字体（中英混排、.ttc 集合规避、字体检查） | [references/fonts.md](references/fonts.md)，脚本 `scripts/check_font.py` |
 | 布局尺寸算术（居中、基线 0.35、盒高 3×字号、连接线、交付自查） | [references/layout-arithmetic.md](references/layout-arithmetic.md) |
@@ -53,7 +53,7 @@ metadata:
 | 架构图/流程图/时序图/ER/UML/状态机/时间线/矩阵/思维导图/网络拓扑 | 技术逻辑图：diagram-types.md + 配色 references |
 | 设备图/P&ID/工艺流程/剖面/立体效果/手绘氛围 | 工程示意图：engineering-three-styles.md |
 | 说不清 | 逻辑关系走技术图；实物/设备走工程图 |
-| 多页演示文稿、一套 deck、统一风格 | 不走单图流程，改用 `code/ppt_styles` |
+| 多页演示文稿、一套 deck、统一风格 | 不走单图流程，改用 pptx 工具链 |
 
 ## 响应契约
 
