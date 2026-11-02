@@ -3,7 +3,7 @@
   "height": 864,
   "eyebrow": "推理时间账",
   "title": "一张图 / 25步 / 616秒",
-  "subtitle": "MOSS-Image 本地推理 · P100 · 1536×864",
+  "subtitle": "MiniMax 生图 · 1536×864",
   "metric": {
     "value": "22.55s",
     "label": "每步采样"

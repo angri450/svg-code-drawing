@@ -5,7 +5,7 @@
 ## 设计系统
 
 - 画布 1536×864，16:9。
-- 纸面：象牙白，MOSS 出的细纤维纹理；右侧可留一条暗红边。
+- 纸面：象牙白，出图通道出的细纤维纹理；右侧可留一条暗红边。
 - 标题和大数字：Noto Serif CJK SC Bold（思源宋体），深红 `#8E1B2A`。
 - 正文、标签、来源：Noto Sans CJK SC（思源黑体），炭灰 `#3F3F3F` / 灰 `#6B6B6B`。
 - 细线：亮红 `#C8102E`；辅助线：`#D8D2C6`。
@@ -17,7 +17,7 @@
 {
   "eyebrow": "推理时间账",
   "title": "一张图 / 25步 / 616秒",
-  "subtitle": "MOSS-Image 本地推理 · P100 · 1536×864",
+  "subtitle": "MiniMax 生图 · 1536×864",
   "metric": { "value": "22.55s", "label": "每步采样" },
   "bar": {
     "total": 616.3,
@@ -63,20 +63,30 @@ python scripts/build_infographic.py examples/infographic-metric.json out.svg
 - 宽段（≥160px）标签居中在条上方，百分比在条内；窄段标签放条上方，并把百分比并进标签。
 - 按 `ticks.count` 画 25 个刻度，间距 30px。
 - 标题、大数字、结论用衬线；其余用黑体。
-- 输出透明底 SVG，交给 `moss_compose.py` 叠纸面。
+- 输出透明底 SVG，交给 `compose_layers.py` 叠纸面。
 
-## MOSS 纸面底图
+## 纸面底图
 
 信息图的底图只要纸，不要内容。prompt 模板：
 
 > A clean warm ivory paper background for a high-end consulting infographic. Very subtle natural fiber texture, soft diffused daylight from the upper left, a faint deep crimson vertical accent at the far right edge, generous empty space across the center and left, no text, no objects, no charts, no dark blocks, no shadows, minimal, calm, editorial, high resolution.
 
-1536×864，25 步即可。跑完先目检：中央和左侧必须是干净纸面，不能有物体、文字、深色块；右侧暗红边可以有，但不能压到正文区。
+走 MiniMax 出图通道，`aspect_ratio` 用 `16:9`，`resolution` 用 `2K`：
+
+```bash
+mcode-tools connector call connector__matrix__generate_image --args-file 纸面参数.json
+```
+
+```json
+{"requests": [{"prompt": "上面那段英文 prompt", "aspect_ratio": "16:9", "resolution": "2K"}]}
+```
+
+跑完先目检：中央和左侧必须是干净纸面，不能有物体、文字、深色块；右侧暗红边可以有，但不能压到正文区。
 
 ## 合成与验收
 
 ```bash
-uv run --with opencv-python-headless --with numpy --with resvg-py python scripts/moss_compose.py \
+uv run --with opencv-python-headless --with numpy --with resvg-py python scripts/compose_layers.py \
   --bg paper.png --svg out.svg --out final.svg --png final.png --wide 1536 --renderer resvg
 ```
 
@@ -97,7 +107,7 @@ uv run --with pillow python scripts/annotate_html.py final.png --out review.html
 
 - 位置/字号/颜色类意见：直接改 `out.svg` 或 spec，重跑 `build_infographic.py`。
 - 数据类意见：改 spec 的 `value`/`total`/`ticks`，不要手改 SVG 里的数字。
-- 底图类意见（纸太脏、暗块侵入）：重出 MOSS 纸面，不动 SVG。
+- 底图类意见（纸太脏、暗块侵入）：重出纸面底图，不动 SVG。
 
 每轮只合成一次；改完重新导出 PNG，再生成一份新的标注页给用户复查。
 

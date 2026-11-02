@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """三层布景一键合成：底图 + 配件（自动抠白底）+ 线稿层 → 单文件 SVG [+PNG]。
 
-MOSS 版：配件默认不做去水印处理；素材确实带水印时显式加 --remove-watermark。
+配件默认不做去水印处理；素材确实带水印时显式加 --remove-watermark。
 全程零看图：自检全用数字报告（不透明占比/包围盒/尺寸），人只看数字。
 用法:
-  uv run python moss_compose.py --bg 底.png --svg 线稿.svg --out 成品.svg [--png 成品.png] [--wide 1600]
+  uv run python compose_layers.py --bg 底.png --svg 线稿.svg --out 成品.svg [--png 成品.png] [--wide 1600]
     --prop 配件.png:x:y:h   可多次；x/y/h 为线稿 viewBox 单元（不写 x:y:h 则自动居中底部，h=60）
     --remove-watermark       去掉配件右下水印区（默认不做）
     --watermark-box x1,y1,x2,y2  自定义水印区，像素坐标，自动开启去水印
     --renderer auto|resvg|rsvg|chrome  PNG 导出渲染器，默认 auto（resvg → rsvg → chrome）
 示例:
-  uv run --with opencv-python-headless --with numpy --with resvg-py python moss_compose.py \
+  uv run --with opencv-python-headless --with numpy --with resvg-py python compose_layers.py \
     --bg bg.png --svg pid.svg --out final.svg --png final.png \
     --prop worker.png:612:373:72 --prop cat.png:238:396:46
-  uv run python moss_compose.py --bg bg.png --svg pid.svg --out final.svg --remove-watermark
+  uv run python compose_layers.py --bg bg.png --svg pid.svg --out final.svg --remove-watermark
 """
 import argparse
 import base64

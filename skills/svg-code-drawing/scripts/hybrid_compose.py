@@ -11,7 +11,7 @@
   uv run python hybrid_compose.py --bg bg.png --svg pid.svg --out final.svg --png final.png \
     --prop worker.png:612:373:72 --prop cat.png:238:396:46
 
-这是 moss_compose.py 的前身。日常合成走 moss_compose.py，本脚本保留作参考。
+这是 compose_layers.py 的前身。日常合成走 compose_layers.py，本脚本保留作参考。
 """
 import argparse
 import base64

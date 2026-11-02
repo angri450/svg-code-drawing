@@ -3,7 +3,7 @@
 <g font-family="'Noto Sans CJK SC', sans-serif">
 <text x="96" y="96" font-size="22" fill="#8E1B2A" letter-spacing="6">推理时间账</text>
 <text x="96" y="190" font-family="'Noto Serif CJK SC', serif" font-size="64" font-weight="700" fill="#8E1B2A">一张图 / 25步 / 616秒</text>
-<text x="100" y="252" font-size="28" fill="#6B6B6B">MOSS-Image 本地推理 · P100 · 1536×864</text>
+<text x="100" y="252" font-size="28" fill="#6B6B6B">MiniMax 生图 · 1536×864</text>
 <line x1="96" y1="290" x2="700" y2="290" stroke="#C8102E" stroke-width="3"/>
 <text x="96" y="450" font-family="'Noto Serif CJK SC', serif" font-size="140" font-weight="700" fill="#8E1B2A">22.55s</text>
 <text x="100" y="500" font-size="24" fill="#6B6B6B">每步采样</text>

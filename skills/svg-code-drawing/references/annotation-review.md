@@ -19,7 +19,7 @@ uv run --with pillow python scripts/annotate_html.py 成品.png --out review.htm
 
 然后把 HTML 交给用户：
 
-- 有 artifact / 分享链接工具，就发布成链接，用户在浏览器里直接打开。
+- 用 `website_deploy` 发布成 MiniMax 站点链接，用户在浏览器里直接打开。
 - 没有发布工具，就把 HTML 文件发过去，让用户双击打开。
 - 不要为远程浏览器起 `http.server`，也不要把 `127.0.0.1` 地址发给用户。
 
@@ -66,7 +66,7 @@ uv run --with pillow python scripts/annotate_html.py 成品.png --out review.htm
 
 1. 读 `items`，按坐标在 SVG 里找对应元素。文字、数字、条形、刻度通常都能靠坐标定位。
 2. 一条标注改一处，不要顺手改没被标注的内容。
-3. 修改后重跑 `moss_compose.py`，保留同一张底图；只有标注明确指向底图（纸太小、场景侵入、纹理太脏）时才重出背景。
+3. 修改后重跑 `compose_layers.py`，保留同一张底图；只有标注明确指向底图（纸太小、场景侵入、纹理太脏）时才重出背景。
 4. 重新导出 PNG，再生成一份新的标注页给用户复查。每轮只合成一次。
 5. 把标注 JSON 和产物放在一起，方便回溯。
 

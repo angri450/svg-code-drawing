@@ -6,7 +6,7 @@
   python build_infographic.py spec.json out.svg
 
 设计空间固定 1536×864，输出 SVG 的 width/height 可另设；文字和坐标按设计空间排。
-底图留透明，交给 moss_compose.py 叠 MOSS 纸面。
+底图留透明，交给 compose_layers.py 叠纸面底图。
 """
 import argparse
 import html

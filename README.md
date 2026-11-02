@@ -36,7 +36,7 @@
 | **工程示意图** | P&ID、设备图、工艺流程、剖面、立体效果。三套配方：铅笔、剖面、渐变 |
 | **手绘风** | 白板马克笔、黑板粉笔、蓝图、钢笔淡彩、方格纸、铜版雕刻、极简线稿、3D 等轴测，共 8 种 |
 | **论文多面板图** | Cell / Nature 风版面、信息图、Graphical Abstract（图形摘要），附投稿审计（字号 pt、色数、色盲、统计口径） |
-| **信息图** | 一页一个数据故事：大数字、比例条、刻度、结论、来源；一份 JSON 生成 1536×864 SVG，叠 MOSS 纸面 |
+| **信息图** | 一页一个数据故事：大数字、比例条、刻度、结论、来源；一份 JSON 生成 1536×864 SVG，叠纸面底图 |
 
 技术图另有七套配色（style-1 到 style-7，默认 style-1），按图型选型见 `references/style-diagram-matrix.md`。
 
@@ -100,7 +100,7 @@ skills/svg-code-drawing/        skill 本体
     style-1..7*.md              技术图配色，默认 style-1
     layout-arithmetic.md        布局尺寸算术：居中、基线、盒高、连接线、交付自查
     annotation-review.md        读图评审：单文件标注页、JSON 坐标回改
-    infographic.md              信息图：数据规格、MOSS 纸面、合成与标注
+    infographic.md              信息图：数据规格、纸面底图、合成与标注
     pitfalls.md                 生成方式、导入器、防错、坑速查、可移植模式
     svg-beyond-drawing.md       动画、交互、图表、地图、图标 sprite
     icons.md                    产品图标
@@ -111,7 +111,7 @@ skills/svg-code-drawing/        skill 本体
     build_infographic.py        信息图生成器：JSON 规格 → SVG
     check_font.py               字体名解析、.ttc 多语言集合检测、中英混排字体栈
     validate_svg.py             校验 10 类检查，--portable 面向 PPT/打印/HMI
-    export_png.py               出 PNG（resvg / rsvg-convert / Chromium 自动降级）
+    export_png.py               出 PNG（resvg-py / rsvg-convert / cairosvg / Chromium 自动降级）
     bundle_html.py              打 HTML 交付壳（响应式缩放、内联 DOM 可点选）
     academic_figure.py          期刊骨架生成（mm 坐标 + 变体）
     example_cell_figure.py      Cell 风成品范例
@@ -119,7 +119,7 @@ skills/svg-code-drawing/        skill 本体
     mermaid_to_svg.py           导入 Mermaid
     drawio_to_svg.py            导入 draw.io
     extract_brand.py            站点品牌色提取
-    moss_compose.py             画风质感管线：MOSS/生图出底 + SVG 线稿与文字叠印（水印可选）
+    compose_layers.py           画风质感管线：底图 + 配件 + 线稿三层合成（水印可选）
     annotate_html.py            单文件标注页：图片内嵌、框选/点选、导出 JSON
   templates/                    10 种技术图骨架 SVG
   examples/                     论文面板样例（panels、arrows）、信息图样例（infographic-metric.json/.svg）
