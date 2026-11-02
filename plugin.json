@@ -6,8 +6,8 @@
   "author": {
     "name": "angri450"
   },
-  "homepage": "https://gitcode.com/angri450/svg-code-drawing",
-  "repository": "https://gitcode.com/angri450/svg-code-drawing",
+  "homepage": "https://github.com/angri450/svg-code-drawing",
+  "repository": "https://github.com/angri450/svg-code-drawing",
   "license": "Apache-2.0",
   "keywords": ["svg", "diagram", "flowchart", "architecture", "drawing", "cjk-font"]
 }
