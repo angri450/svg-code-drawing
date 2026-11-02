@@ -22,6 +22,7 @@ metadata:
 | 技术图（架构/流程/时序/ER/状态机/甘特等 14 类型） | [references/diagram-types.md](references/diagram-types.md)，骨架 `templates/`，生成器 `scripts/generate-from-template.py` |
 | 论文/期刊多面板图（Cell/Nature 风、信息图、Graphical Abstract） | `references/academic/` 三份：journal-spec 版面数字、figure-workflow 工作流与图注、components 组件库；`scripts/academic_figure.py` 生成 mm 坐标骨架与 2-3 个变体；正样数据 `examples/academic-panels.json`、`examples/academic-arrows.json`；成品范例 `scripts/example_cell_figure.py`；投稿审计 `scripts/audit_figure.py`（字号 pt、色数、色盲、统计口径） |
 | 信息图（一页一个数据故事：大数字 + 比例条 + 刻度 + 结论） | [references/infographic.md](references/infographic.md)，生成器 `scripts/build_infographic.py`，样例 `examples/infographic-metric.json` |
+| 海报/卡片/封面（竖版 1600×2000、方版 1200×1200、横版 1920×1080，五组配色、三套字阶、卡片几何） | [references/poster-layout-kit.md](references/poster-layout-kit.md) |
 | 自由曲线（河流、飘带、山脊、卷轴这类「像活的」曲线） | [references/curve-composition.md](references/curve-composition.md)，生成器 `scripts/curve_builder.py`，样例 `examples/curve-river.json` |
 | 画风质感（吉卜力/日漫/水彩氛围底） | [references/hybrid-pipeline.md](references/hybrid-pipeline.md)，底图走本地 MOSS 或生图 MCP，SVG 线稿与文字叠印，合成脚本 `scripts/moss_compose.py` |
 | 读图评审、在图上框选/点选标注 | [references/annotation-review.md](references/annotation-review.md)，脚本 `scripts/annotate_html.py` |
@@ -64,5 +65,5 @@ metadata:
 
 - `scripts/`：generate_three_styles.py（工程三件套）、generate-from-template.py（技术图 14 类型，支持 font_en/font_cn 中英混排）、build_diagram.py（生成、校验、导出一条命令）、build_infographic.py（信息图生成器）、check_font.py（字体名解析、.ttc 多语言集合检测、中英混排字体栈）、validate_svg.py（校验 + --portable）、export_png.py（PNG，resvg/rsvg-convert/cairosvg/Chromium）、bundle_html.py（HTML 交付）、extract_brand.py（品牌色）、mermaid_to_svg.py 与 drawio_to_svg.py（导入）、academic_figure.py（期刊骨架）、example_cell_figure.py（Cell 风范例）、audit_figure.py（投稿审计）、moss_compose.py（底图 + 配件 + 线稿合成，水印可选）、annotate_html.py（单文件标注页，导出 JSON）
 - `templates/`：10 种技术图骨架，供手写起底，生成器只读取 viewBox
-- `references/`：上表各 reference、annotation-review.md、infographic.md、style-1..7、icons.md、svg-layout-best-practices.md、style-diagram-matrix.md
+- `references/`：上表各 reference、annotation-review.md、infographic.md、poster-layout-kit.md、style-1..7、icons.md、svg-layout-best-practices.md、style-diagram-matrix.md
 - `examples/`：论文面板样例（academic-panels.json、academic-arrows.json）、信息图样例（infographic-metric.json/.svg）
