@@ -11,7 +11,7 @@ metadata:
 
 不调文生图，纯代码写 SVG。文字用系统字体直排，结构坐标逐点计算。
 
-本 skill 负责单张图。要做多页演示文稿，走本机的 pptx 工具链，见路线图「多页 PPT」一行。
+本 skill 负责单张图。要做多页演示文稿，走宿主提供的 pptx 工具链，见路线图「多页 PPT」一行。
 
 ## 路线图（按需加载）
 
@@ -27,7 +27,7 @@ metadata:
 | 自由曲线（河流、飘带、山脊、卷轴这类「像活的」曲线） | [references/curve-composition.md](references/curve-composition.md)，生成器 `scripts/curve_builder.py`，样例 `examples/curve-river.json` |
 | 画风质感（吉卜力/日漫/水彩氛围底） | [references/hybrid-pipeline.md](references/hybrid-pipeline.md)，底图走 MiniMax 出图通道，SVG 线稿与文字叠印，合成脚本 `scripts/compose_layers.py` |
 | 读图评审、在图上框选/点选标注 | [references/annotation-review.md](references/annotation-review.md)，脚本 `scripts/annotate_html.py` |
-| 多页 PPT / 演示文稿 | 多页 deck 走本机的 pptx 工具链（本机是 `slides` 目录的 pptxgenjs 路线）；deck 里要放整张成品图时，用本 skill 的 `compose_layers.py` 合成、`export_png.py` 导出，再写进 image 字段。生成后的检查项见 [references/pptx-pitfalls.md](references/pptx-pitfalls.md) |
+| 多页 PPT / 演示文稿 | 多页 deck 走宿主提供的 pptx 工具链（具体链路随宿主而定）；deck 里要放整张成品图时，用本 skill 的 `compose_layers.py` 合成、`export_png.py` 导出，再写进 image 字段。生成后的检查项见 [references/pptx-pitfalls.md](references/pptx-pitfalls.md) |
 | pptx 零件（图片形态、图片墙、蜂巢、三线表） | [references/pptx-parts.md](references/pptx-parts.md)，形状规格与比例规则 |
 | 技术图配色 | `references/style-1..7*.md`，默认 style-1；选型见 style-diagram-matrix.md |
 | 字体（中英混排、.ttc 集合规避、字体检查） | [references/fonts.md](references/fonts.md)，脚本 `scripts/check_font.py` |
@@ -48,7 +48,7 @@ metadata:
 4a. （可选）元素密集、标注堆叠、文字改长时跑检测：`python scripts/check_overlap.py <svg>`。查三类问题：字压字、字被后画的图形盖住、文字撑破它所在的卡片或跑出画布。把提示逐条看一眼，确实出框的改掉（加宽卡片、缩短文案、拆行），可忽略的（标签垫、装饰虚线、刻意点上的标记点）放过。提示级检查，不阻断交付，见 references/overlap-check.md。
 5. 人机交互审查（所有路线以这一步收尾）：同一台机器时，产物经 `bundle_html.py` 打成 HTML 壳（剥固定宽高、响应式缩放、内联 DOM 可点选）→ 在产物目录起 `uv run python -m http.server 8897`（文件名用 ASCII，中文名在 http.server 上 404）→ 浏览器工具开 `http://127.0.0.1:8897/<文件>.html` → 用户点选元素 → 改线稿坐标 → 重新合成 → 刷新复查。浏览器不在同一台机器时，不要发 `127.0.0.1`，改用 `scripts/annotate_html.py` 生成单文件标注页，用户框选/点选并导出 JSON。验收两条：元素、关系、文字齐全；缩到目标介质实际尺寸仍可读。裸开 SVG 有两个问题：固定宽高会缩成小块并留白边；裸 SVG 文档无法点选。
 6. 导出后自查（不可跳过）：先 `export_png.py` 出 PNG，再用图像读取工具把 PNG 读回来亲眼看一遍，检查三件事——文字有没有压字或被图形盖住、标注有没有指错对象、整体在缩小后是否还读得出来。发现问题就改 SVG 坐标再导一次。写完 SVG 不看渲染结果，等于没验收：坐标算得再对，落到画面上的效果只有看图才知道。
-7. 交付：用户确认后运行 `export_png.py`（resvg-py / rsvg-convert / cairosvg / Chromium 自动降级出 PNG），保留原 SVG/HTML；用 `uv run` 时加 `--with resvg-py`，本机已装 resvg-py。`extract_brand.py` 可选，用于站点配色对齐。
+7. 交付：用户确认后运行 `export_png.py`（resvg-py / rsvg-convert / cairosvg / Chromium 自动降级出 PNG），保留原 SVG/HTML；用 `uv run` 时加 `--with resvg-py`（装没装由环境决定，缺了就加这个参数）。`extract_brand.py` 可选，用于站点配色对齐。
 
 ## 判定：走哪一半
 

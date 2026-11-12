@@ -48,11 +48,19 @@ uv run --with fonttools python scripts/check_font.py --list --cjk
 
 `--check` 对多语言集合会给建议（`建议写成带地区后缀的精确名：'FangSong SC'`），对未安装的字体点名后果（回退到默认字体的风险）。退出码非零表示有问题。
 
-## 本机实测（Windows 11）
+## 按当前环境实测，不要照抄别人的结论
 
-`check_font.py --check` 在本机的结果：宋体命中 simsun.ttc 索引 0，微软雅黑命中 msyh.ttc 索引 0，Noto Sans CJK 未安装。所以本机的中文字体写 `'FangSong SC'` 或 `'宋体'` 都能命中，不要拿 `'Noto Sans CJK'` 兜底（没装，会被静默回退）。
+各机器装的字体不一样，结论不能写死。一次 `--check` 只反映当次环境。
 
-未安装的名字会被渲染器静默回退到默认字体，中文可能出日文字形，所以每加一个新字体名先跑一次 `--check`。
+```bash
+uv run --with fonttools python scripts/check_font.py --check "宋体" "微软雅黑" "Noto Sans CJK"
+```
+
+要记住的是三条通则，不是某台机器的具体命中结果：
+
+- 中文字体写带地区后缀的精确名（`'FangSong SC'`、`'Noto Sans CJK SC'`），裸名字在多语言集合里取到的变体随索引顺序变，可能拿到日文或繁体。
+- 拿不准装没装就写进 `--check` 问一遍。没装的名字会被渲染器静默回退，中文可能出日文字形，图上看不出来。
+- 每加一个新字体名先跑一次 `--check`。环境会变，别的机器上装了什么你不知道。
 
 ## 常用字体对
 

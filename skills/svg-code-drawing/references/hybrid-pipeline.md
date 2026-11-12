@@ -4,7 +4,7 @@
 
 ## 出底图：MiniMax 出图通道
 
-底图和配件都走本机的 MiniMax 出图通道，文生图和改图是同一个入口：
+底图和配件都走宿主的出图通道，文生图和改图是同一个入口：
 
 ```bash
 mcode-tools connector call connector__matrix__generate_image --args-file 参数.json
@@ -28,7 +28,7 @@ uv run --with opencv-python-headless --with numpy --with resvg-py python scripts
   --prop 工人.png:612:373:72 --prop 猫.png:238:396:46
 ```
 
-PNG 导出按 resvg → rsvg-convert → Chromium 自动降级；本机装了 resvg-py，`uv run` 时带 `--with resvg-py` 就能直接出 PNG。
+PNG 导出按 resvg → rsvg-convert → Chromium 自动降级；`uv run` 时带 `--with resvg-py` 就能直接出 PNG，装没装由环境决定。
 
 --prop 格式 `路径:x:y:h`（viewBox 单位）；省略坐标时自动居中底部，h=60。路径解析兼容 Windows 盘符，从右往左剥坐标。
 

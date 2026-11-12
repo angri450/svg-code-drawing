@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """SVG 语法校验：XML 合法性 + 标签闭合 + marker 引用 + 属性完整性 + path 数据粗检。
-本机 rsvg-convert 不可用时用这个。
+没有 rsvg-convert 时用这个做静态检查。
 用法: uv run python validate_svg.py <file.svg> [more.svg ...] [--portable]
 --portable：可移植模式（目标是 PPT/打印/HMI/PDF 链路时用）——filter/mask/clipPath/
 foreignObject 在这些渲染器里行为不一致或直接失效，视为问题报出。

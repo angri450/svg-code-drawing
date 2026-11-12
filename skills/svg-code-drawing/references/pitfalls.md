@@ -82,7 +82,7 @@ JSON 的键名写错不报错，内容直接不画出来。写之前按这份对
 | resvg 可执行文件 | 自行安装 | 优先于 resvg-py |
 | resvg-py | `pip install resvg-py` | 最轻，中文正常，推荐 |
 | rsvg-convert | `apt install librsvg2-bin` | 系统包，稳定 |
-| cairosvg | `pip install cairosvg` | 纯 Python，无外部二进制；本机系统 python3 里有 2.9.1，各专用环境里没装 |
+| cairosvg | `pip install cairosvg` | 纯 Python，无外部二进制；部分环境里装不上 DLL，装之前先试跑一次 |
 | Chromium / Edge | 装浏览器 | 滤镜/CSS 支持最好 |
 
 用 `uv run` 时可以直接带包：
