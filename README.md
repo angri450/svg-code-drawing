@@ -37,6 +37,7 @@
 | **手绘风** | 白板马克笔、黑板粉笔、蓝图、钢笔淡彩、方格纸、铜版雕刻、极简线稿、3D 等轴测，共 8 种 |
 | **论文多面板图** | Cell / Nature 风版面、信息图、Graphical Abstract（图形摘要），附投稿审计（字号 pt、色数、色盲、统计口径） |
 | **信息图** | 一页一个数据故事：大数字、比例条、刻度、结论、来源；一份 JSON 生成 1536×864 SVG，叠纸面底图 |
+| **教学示意图** | 给初学者讲清一个机制：分块叙述、同一概念同色、虚线表配对关系、画动作不画比喻 |
 
 技术图另有七套配色（style-1 到 style-7，默认 style-1），按图型选型见 `references/style-diagram-matrix.md`。
 
@@ -47,7 +48,9 @@
 - 要手绘风：白板、粉笔、蓝图、水彩、方格纸、铜版雕刻、极简线稿、3D 等轴测
 - 要论文配图：Cell / Nature 风多面板图、信息图、Graphical Abstract
 - 要做一页一个数据故事的信息图：大数字、比例条、刻度、结论，不要三栏卡片仪表盘
-- 触发词：画图、示意图、架构图、流程图、P&ID、论文配图、信息图、手绘风、SVG
+- 要给别人讲清一个机制：教学图解、过程分步图、概念对照图
+- 已有图看不懂、要重画一版更清楚的
+- 触发词：画图、示意图、架构图、流程图、P&ID、论文配图、信息图、手绘风、SVG、教学图、讲清机制、过程分步图
 
 ## 怎么工作
 
@@ -56,12 +59,13 @@
 </p>
 
 0. **语义先行**：一句话写清这张图要传达的机制。每个形状对应一个能命名的真实概念，叫不出名字的删掉。节点上限 9，超过拆成两张图。
-1. **分类**：实物、设备、P&ID、剖面走工程示意图；逻辑、架构、流程走技术逻辑图。
+1. **分类**：实物、设备、P&ID、剖面走工程示意图；逻辑、架构、流程走技术逻辑图；讲机制给初学者听走教学示意图。
 2. **选风格与字体**：工程图用三套配方；手绘风八选一；技术图默认 style-1。字体按需指定，写名字前先查（见下节）。
 3. **生成**：技术图用 `build_diagram.py` 起步（生成、校验、导出一条命令），信息图先写 JSON 规格再用 `build_infographic.py` 出 SVG，工程图写 Python 脚本，有现成稿走导入器（Mermaid、draw.io）。
 4. **校验**：十类检查。目标为 PPT、打印、HMI 时加 `--portable`。
 5. **人机审查**：同一台机器时产物打成 HTML 壳，浏览器里点选元素，改坐标再合成，刷新复查；浏览器不在同一台机器时改用 `annotate_html.py` 生成单文件标注页，用户框选/点选后导出 JSON。
-6. **交付**：出 PNG（resvg / rsvg-convert / Chromium 自动降级），保留原 SVG 与 HTML。
+6. **导出后自查**：出 PNG 后把 PNG 读回来亲眼看一遍——文字有没有压字、标注有没有指错对象、缩小后还读不读得出来。写完 SVG 不看渲染结果等于没验收。
+7. **交付**：出 PNG（resvg / rsvg-convert / Chromium 自动降级），保留原 SVG 与 HTML。
 
 ## 字体
 
@@ -101,6 +105,8 @@ skills/svg-code-drawing/        skill 本体
     layout-arithmetic.md        布局尺寸算术：居中、基线、盒高、连接线、交付自查
     annotation-review.md        读图评审：单文件标注页、JSON 坐标回改
     infographic.md              信息图：数据规格、纸面底图、合成与标注
+    teaching-diagram.md         教学示意图：分块叙述、同色同概念、画动作不画比喻
+    overlap-check.md            重叠与出框检测：字压字、字被图形盖、文字撑破卡片
     pitfalls.md                 生成方式、导入器、防错、坑速查、可移植模式
     svg-beyond-drawing.md       动画、交互、图表、地图、图标 sprite
     icons.md                    产品图标
@@ -121,6 +127,8 @@ skills/svg-code-drawing/        skill 本体
     extract_brand.py            站点品牌色提取
     compose_layers.py           画风质感管线：底图 + 配件 + 线稿三层合成（水印可选）
     annotate_html.py            单文件标注页：图片内嵌、框选/点选、导出 JSON
+    check_overlap.py            重叠与出框检测：五类提示，不阻断交付
+    curve_builder.py            自由曲线生成器：河流、飘带、山脊、卷轴
   templates/                    10 种技术图骨架 SVG
   examples/                     论文面板样例（panels、arrows）、信息图样例（infographic-metric.json/.svg）
 assets/                         宣传物料：能力总览横幅、工作流图，附生成脚本与数据
